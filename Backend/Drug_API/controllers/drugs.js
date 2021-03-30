@@ -34,13 +34,12 @@ module.exports = {
             });
 
             //Deep copy the categories object
-            let category_drugs = structuredClone(categories);
+            let category_drugs = categories;
             for(let i = 0; i < promises.length; i++) {
                 category_drugs[i]['drugs'] = promises[i];
             }
 
             data = {
-                categories: categories,
                 category_drugs: category_drugs
             };
             
@@ -49,6 +48,5 @@ module.exports = {
             db.close();
             return next(err);
         }
-        
     }
 }

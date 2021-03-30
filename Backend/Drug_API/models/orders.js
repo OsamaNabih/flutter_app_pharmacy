@@ -7,5 +7,6 @@ module.exports = {
     getOrderCost: 'SELECT `Total Cost` FROM `Users Orders` WHERE order_id = ?',
     getTotalOrdersCostForUser: 'SELECT SUM(`Total Cost`) FROM `Users Orders` WHERE user_id = ?',
     //getUserOrders: 'SELECT * FROM Orders NATURAL JOIN `Order Status` WHERE user_id = ?',
-    getOrderDrugs: 'SELECT * FROM Drugs JOIN `Order Drugs` ON order_drug_id = drug_id WHERE order_id = ?'
+    getOrderDrugs: 'SELECT * FROM Drugs JOIN `Order Drugs` ON order_drug_id = drug_id WHERE order_id = ?',
+    getAllOrdersWithUsers: 'SELECT user_id, order_id, user_name, order_date, order_status_name, `Total Cost`, order_note FROM `Users Orders` NATURAL JOIN Users'
 }

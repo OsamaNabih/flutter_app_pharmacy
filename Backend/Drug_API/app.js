@@ -23,6 +23,7 @@ app.use(morgan('dev'));
 // Initialize routes
 app.use('/users', require('./routes/users.js'));
 app.use('/drugs', require('./routes/drugs.js'));
+app.use('/orders', require('./routes/orders.js'));
 
 //app.use('/me', require('./routes/meetups'));
 
