@@ -2,6 +2,9 @@ const router = require('express').Router();
 const drug_controller = require('../controllers/drugs.js');
 const { checkToken } = require('../auth/token_validation');
 
+router.route('/')
+    .get(drug_controller.getAllDrugs);
+
 router.route('/by_category')
     .get(drug_controller.getCategoriesAndDrugsByCategory);
 

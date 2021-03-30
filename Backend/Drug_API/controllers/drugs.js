@@ -10,6 +10,18 @@ const structuredClone = obj => {
 };
 
 module.exports = {
+    getAllDrugs: async(req, res, next) => {
+        const db = getDatabase(db_config);
+        try {
+            let drugs = await db.query(drug_model.getAllDrugs);
+            db.close();
+            return res.status(200).json({drugs: drugs});
+        }
+        catch (err) {
+            db.close();
+            return next(err);
+        }
+    },
     getCategoriesAndDrugsByCategory: async(req, res, next) => {
         const db = getDatabase(db_config);
         try {
