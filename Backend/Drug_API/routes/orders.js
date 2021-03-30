@@ -5,7 +5,10 @@ const { checkToken } = require('../auth/token_validation')
 router.route('/')
     .get(order_controller.getAllOrders);
 
-router.route('/:id')
+router.route('/:order_id')
+    .get(order_controller.getOrder);
+
+router.route('/user/:user_id')
     .get(order_controller.getAllOrdersByUser);
 
 module.exports = router;

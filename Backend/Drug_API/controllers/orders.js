@@ -16,10 +16,23 @@ module.exports = {
             return next(err);
         }
     },
+    getOrder: async(req, res, next) => {
+        const db = getDatabase(db_config);
+        try {
+            console.log(req.params.order_id);
+            let order = await db.query(order_model.getOrder, req.params.order_id);
+            console.log(order);
+            return res.status(200).json({order: order});
+        }
+        catch(err) {
+            db.close();
+            return next(err);
+        }
+    },
     getAllOrdersByUser: async(req, res, next) => {
         const db = getDatabase(db_config);
         try {
-            let orders = await db.query(order_model.getAllOrdersByUser, req.params.id);
+            let orders = await db.query(order_model.getAllOrdersByUser, req.params.user_id);
             console.log(orders);
             return res.status(200).json({orders: orders});
         }
