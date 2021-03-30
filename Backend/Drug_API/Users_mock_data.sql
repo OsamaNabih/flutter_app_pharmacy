@@ -1,0 +1,15 @@
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (1, 21, 'wianne0@list-manage.com', 'TmEgy1cEl', '8678844809', 1);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (2, 51, 'drainer1@mit.edu', 'Jpe6Up', '7136223076', 3);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (3, 14, 'bstanhope2@plala.or.jp', 'FisRxr3n6b', '6154511336', 2);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (4, 80, 'apendre3@mlb.com', 'kkIJGjDDvXyL', '2565836850', 3);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (5, 41, 'rmcpharlain4@vinaora.com', 'Cjj5tii9Efg', '3013824732', 3);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (6, 12, 'kmurrells5@businesswire.com', 'QizMflR', '4437888439', 2);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (7, 23, 'aredrup6@cafepress.com', 'VnxJbT', '6928542138', 1);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (8, 47, 'skarlsson7@howstuffworks.com', 'tumXeOaA', '5324977794', 2);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (9, 77, 'mjodlowski8@oracle.com', 'G8bSNk', '7743935978', 3);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (10, 70, 'dcahill9@admin.ch', 'GAHLbh7', '8573905518', 2);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (11, 56, 'rhitzkea@archive.org', '85d8GKDQLi', '2063122135', 1);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (12, 20, 'sstraughanb@reference.com', 'e7BxrU3ok', '6622070007', 2);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (13, 81, 'vtschierschc@dailymail.co.uk', 'X7pVwMk', '6896796422', 3);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (14, 57, 'tdeweyd@ted.com', 'D5TZh2', '3812221417', 3);
+insert into Users (user_id, user_name, user_email, user_password, user_phone, user_type_id) values (15, 34, 'wbeige@cnet.com', 'DVWEVfMOs', '6506321303', 1);
