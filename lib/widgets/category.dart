@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 Widget category (String name, Function onTapFunc){
   return InkWell(
-    onTap: onTapFunc(name),
 
     child: Container(
       width: 70,
@@ -22,5 +21,8 @@ Widget category (String name, Function onTapFunc){
         ),
       ),
     ),
+
+    onTap: onTapFunc(name),
+
   );
 }

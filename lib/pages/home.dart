@@ -2,11 +2,14 @@
 //import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/pages/list.dart';
 import 'package:flutter_app_pharmacy/widgets/category.dart';
 import 'package:flutter_app_pharmacy/widgets/grid.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import 'package:flutter_app_pharmacy/widgets/drug.dart';
+
+import 'add_to-list_page.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,14 +19,27 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int selected = 0;
   List<bool> isCatSelected = [];
-  String c ="Category 1";
+  String c = "Category 1";
   Map user_data = {};
   DrugsByCat _drugs_by_cat;
+  List<Widget> catNames = [];
+  List<Drug> drugs = [];
+  Widget app;
+  var init;
 
   void _onItemTapped(int index) {
     setState(() {
       selected = index;
     });
+    if(index==2){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => List_order()));
+    }
+    if(index==1){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Add_to_list()));
+    }
+    if(index==0){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => Home()));
+    }
   }
 
   void _onCategoryTapped(String name) {
@@ -32,8 +48,14 @@ class _HomeState extends State<Home> {
     });
   }
 
+  Future init_page() async {
+    await _getData();
+    _catNames();
+    _drugsInfo();
+    return Future(() => print('init done'));
+  }
 
-  void _getData() async {
+  Future _getData() async {
     print('getting data');
     var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
     print("Sending get request");
@@ -48,11 +70,13 @@ class _HomeState extends State<Home> {
       //All is well
 
       print(_drugs_by_cat.getLength());
-
-
       for(int i = 0; i < drugsByCat.getLength(); i++) {
         isCatSelected.add(true);
       }
+
+
+      //await _drugsInfo();
+      //await _catNames();
 
       /*
       setState(() {
@@ -60,26 +84,34 @@ class _HomeState extends State<Home> {
       });
 
        */
+      return Future(() => print('get req done'));
     }
   }
 
   String _userName() {
-    return user_data == null ? 'Not logged in': {user_data['user_name']};
+    print(user_data.runtimeType);
+    print(user_data['user_name'].runtimeType);
+    return user_data == null ? 'Not logged in': user_data['user_name'];
   }
 
-  List<Widget> _catNames() {
+  void _catNames() {
+
     print('catnames');
     print(_drugs_by_cat.categoryDrugs);
     //print(_drugs_by_cat.categories[0].categoryName);
     List<Widget> catNames = [];
+    if (_drugs_by_cat == null) {
+      print('drugs are null');
+
+    }
     _drugs_by_cat.categoryDrugs.forEach((cat) {
       print(cat.categoryName);
       catNames.add(category(cat.categoryName, _onCategoryTapped));
     });
-    return catNames;
+    this.catNames = catNames;
   }
 
-  List<Drug> _drugsInfo() {
+  void _drugsInfo() {
     print('drugsinfo');
     int selected = isCatSelected.where((item) => item == true).length;
     print('selected $selected');
@@ -93,78 +125,84 @@ class _HomeState extends State<Home> {
       if (isCatSelected[idx])
         drugs.addAll(cat_drugs.getDrugs());
     });
-    return drugs;
+    this.drugs = drugs;
+    //return drugs;
   }
+
 
   _HomeState() {
     print('Inside constructor');
-    _getData();
-    print('Finished reading data');
+    this.init = init_page();
+    print('Finished constructor');
   }
+
 
   @override
   Widget build(BuildContext context) {
     print('build');
     user_data = ModalRoute.of(context).settings.arguments;
-    return  MaterialApp(
-      title:"app",
-      home: Scaffold(
-        appBar: AppBar(
-          title:  Text('Pharmacy App'),
-          backgroundColor:Colors.red,
-          centerTitle: true,
-        ),
-        body: Container(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 60,
-                child: Center(
-                  child:Row(
-                    children: <Widget>[
-                      Icon(
-                        Icons.account_box,
-                        color: Colors.red,
-                        size: 30,
-                      ),
-                      Text(
-                          _userName(),
-                        style: TextStyle(fontSize: 20 , color: Colors.red , fontWeight: FontWeight.bold),
-                      ),
-                    ]
-                  )
+    var widgets = this.init.then((value) {
+      return MaterialApp(
+        title:"app",
+        home: Scaffold(
+          appBar: AppBar(
+            title:  Text('Pharmacy App'),
+            backgroundColor:Colors.red,
+            centerTitle: true,
+          ),
+          body: Container(
+            child: Column(
+              children: <Widget>[
+                Container(
+                  height: 60,
+                  child: Center(
+                      child:Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.account_box,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                            Text(
+                              _userName(),
+                              style: TextStyle(fontSize: 20 , color: Colors.red , fontWeight: FontWeight.bold),
+                            ),
+                          ]
+                      )
+                  ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: this.catNames,
+                ),
+                gridTemplate(this.drugs),
+              ],
+            ),
+          ),
+          bottomNavigationBar: BottomNavigationBar(
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
-                children: _catNames(),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.add_shopping_cart),
+                label: 'Selected drugs',
               ),
-              gridTemplate(_drugsInfo()),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.book),
+                label: 'History',
+              ),
             ],
+            currentIndex: selected,
+            selectedItemColor: Colors.red,
+            onTap: _onItemTapped,
           ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart),
-              label: 'Selected drugs',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'History',
-            ),
-          ],
-          currentIndex: selected,
-          selectedItemColor: Colors.red,
-          onTap: _onItemTapped,
-        ),
-      ),
     );
+  });
+    widgets.then((value) => this.app = value);
+    return this.app;
   }
 }
 

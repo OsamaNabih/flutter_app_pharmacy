@@ -64,49 +64,64 @@ class _LoginState extends State<Login> {
         ),
         body: Container(
             color: Colors.white,
-            child: Column(
+            child: ListView(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(40),
-                  child: Text(
-                    "Login",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                  ),
-                ),
+                 Container(
+                   height: 90,
+                   width: MediaQuery.of(context).size.width,
+                   child: Center(
+                     child: Text(
+                        "Login",
+                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red),
+                      ),
+                   ),
+                 ),
+
                 Container(
-                  width: 300,
-                  child: TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          ),
-                        ),
-                        labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                        labelText: "Enter your email"),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 40),
-                  child: Container(
-                    width: 300,
-                    child: TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                            borderSide: BorderSide(
-                              color: Colors.red,
+                  width: MediaQuery.of(context).size.width,
+                  height: 100,
+                  child: Center(
+                    child: Container(
+                      width: (MediaQuery.of(context).size.width*70)/100,
+                      child: TextFormField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.red,
+                              ),
                             ),
-                          ),
-                          labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                          labelText: "Enter your Password"),
+                            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                            labelText: "Enter your email"),
+                      ),
                     ),
                   ),
                 ),
+
+                   Container(
+                     width: MediaQuery.of(context).size.width,
+                    height: 90,
+                    child: Center(
+                      child: Container(
+                        width: (MediaQuery.of(context).size.width*70)/100,
+                        child: TextFormField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                                borderSide: BorderSide(
+                                  color: Colors.red,
+                                ),
+                              ),
+                              labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                              labelText: "Enter your Password"),
+                        ),
+                      ),
+                    ),
+                  ),
+
                 Padding(
                   padding: EdgeInsets.fromLTRB(30, 60, 30, 40),
                   child: Row(

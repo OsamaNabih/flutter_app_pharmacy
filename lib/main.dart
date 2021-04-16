@@ -13,7 +13,8 @@ void main() => runApp(MaterialApp(
     '/home': (context) => Home(),
     '/login': (context) => Login(),
     '/register': (context) => Register(),
-    '/list': (context) => List(),
+    '/list': (context) => List_order(),
     '/order_details': (context) => Order_D(),
   },
+
 ));

@@ -56,93 +56,116 @@ class _RegisterState extends State<Register> {
       ),
       body: Container(
         color: Colors.white,
-        child: Column(
+        child: ListView(
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(40),
-                child: Text(
-                  "Register",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                ),
-              ),
+               Container(
+                 width: MediaQuery.of(context).size.width,
+                 height: 60,
+                 child: Center(
+                   child: Text(
+                      "Register",
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                    ),
+                 ),
+               ),
+
               Container(
-                width: 300,
-                child: TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0),
-                        borderSide: BorderSide(
-                          color: Colors.red,
-                        ),
+                width: MediaQuery.of(context).size.width,
+                height: 100,
+                child: Center(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width*70/100,
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0),
+                            borderSide: BorderSide(
+                              color: Colors.red,
+                            ),
+                          ),
+                          labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                          labelText: "Enter your Name"),
+                    ),
+                  ),
+                ),
+              ),
+
+                 Container(
+                   width: MediaQuery.of(context).size.width,
+                   height: 100,
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width*70/100,
+                      child: TextFormField(
+                        controller: emailController,
+
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.red,
+                              ),
+                            ),
+                            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                            labelText: "Enter your Email"),
                       ),
-                      labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                      labelText: "Enter your Name"),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 40),
-                child: Container(
-                  width: 300,
-                  child: TextFormField(
-                    controller: emailController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          ),
-                        ),
-                        labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                        labelText: "Enter your Email"),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 40),
-                child: Container(
-                  width: 300,
-                  child: TextFormField(
-                    controller: passwordController,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          ),
-                        ),
-                        labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                        labelText: "Enter your Password"),
+
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: 100,
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width*70/100,
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.red,
+                              ),
+                            ),
+                            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                            labelText: "Enter your Password"),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 40),
-                child: Container(
-                  width: 300,
-                  child: TextFormField(
-                    controller: phoneController ,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0),
-                          borderSide: BorderSide(
-                            color: Colors.red,
-                          ),
-                        ),
-                        labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                        labelText: "Enter your Phone"),
+
+             Container(
+               width: MediaQuery.of(context).size.width,
+               height: 100,
+                  child: Center(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width*70/100,
+                      child: TextFormField(
+                        controller: phoneController ,
+
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.red,
+                              ),
+                            ),
+                            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                            labelText: "Enter your Phone"),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+
               Container(
                 height: 100,
                 width: MediaQuery.of(context).size.width,
-                alignment: Alignment.bottomRight,
+                alignment: Alignment.center,
                 child: Container(
-                  width:80,
+                  width:100,
                   height: 50,
                   child: FloatingActionButton(
                       heroTag: 'Register button',

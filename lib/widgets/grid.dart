@@ -25,19 +25,21 @@ class _GridState extends State<Grid> {
   List<Widget> _getDrugs() {
     List<Widget> drugWidgets = [];
     print('get drugs');
-    print(drugs);
-    drugs.map((drug) => drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice.toString())));
-    print(drugWidgets);
+    //print(drugs);
+    drugs.forEach((drug) {
+      drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice.toString()));
+    });
+    //drugs.map((drug) => drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice.toString())));
+    //print(drugWidgets);
     return drugWidgets;
   }
 
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      child: GridView.count(
-        // Create a grid with 2 columns. If you change the scrollDirection to
-        // horizontal, this produces 2 rows.
-        crossAxisCount: 2,
+      child: ListView(
+
+
         // Generate 100 widgets that display their index in the List.
         children: _getDrugs(),
       ),

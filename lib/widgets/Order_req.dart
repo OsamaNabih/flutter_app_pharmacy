@@ -2,26 +2,92 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/pages/order_details.dart';
 
-class order_request extends StatelessWidget {
+class order_request extends StatefulWidget {
   final String date;
   final String price;
   final String name;
+  final String status;
+ bool vis=true;
+ bool vis1=false;
+  bool vis2=false;
+  Color color;
+  order_request({ this.name,this.date, this.price , this .status}){
+    if(status=="com"){
+        vis=false;
+        vis1=true;
+        vis2=false;
+        color=Colors.green;
+    }else{
+      if(status=="rej"){
+        vis=false;
+        vis2=true;
+        vis1=false;
+        color=Colors.red;
+      }else{
+         vis=true;
+         vis1=false;
+         vis2=false;
+      }
+    }
 
-  order_request({ this.name,this.date, this.price });
+  }
 
+  @override
+  _order_requestState createState() => _order_requestState();
+}
 
+class _order_requestState extends State<order_request> {
+  //bool vis=true;
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.deepOrange,
+      color: Colors.amber,
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          ListTile(
-            leading: Text("$name" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold,fontSize: 25),),
-            title: Text("$date" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),),
-            subtitle: Text("$price", style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),),
+          Container(
+            child:
+                ListTile(
+                  leading: Text("${widget.name}" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold,fontSize: 25),),
+                  title: Text("${widget.date}" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),),
+                  subtitle: Text("${widget.price}", style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),),
+                ),
+
+            ),
+          Visibility(
+            visible: widget.vis1,
+            child:
+            Container(
+              height: 25,
+              child: Center(
+                child: Text(
+                    "Accepted"
+                    ,
+                    style: TextStyle(color: Colors.green,fontWeight:FontWeight.bold,fontSize: 20)
+
+                ),
+              ),
+            ),
+
           ),
+          Visibility(
+            visible: widget.vis2,
+            child:
+            Container(
+              height: 25,
+              child: Center(
+                child: Text(
+                    "Rejected"
+                    ,
+                    style: TextStyle(color: Colors.red,fontWeight:FontWeight.bold,fontSize: 20)
+
+                ),
+              ),
+            ),
+
+          ),
+
+
 
           Container(
 
@@ -30,40 +96,54 @@ class order_request extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                    width: 120,
-                    height: 30,
-                    child: FloatingActionButton(
-                        heroTag: '',
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          "Accept Order",
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
-                        ),
-                        onPressed: () {
-                         // Navigator.pushNamed(context, '/order_details');
-                          //MaterialPageRoute(builder: (context) => orderTemplate()),
-                        }
+                  Visibility(
+                    child: Container(
+                      width: 120,
+                      height: 30,
+                      child: FloatingActionButton(
+                          heroTag: '',
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                          child: Text(
+                            "Accept Order",
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+                          ),
+                          onPressed: () {
+
+                            widget.vis=false;
+                            widget.vis1=true;
+                            widget.vis2=false;
+                            widget.color=Colors.green;
+
+                          }
+                      ),
                     ),
+                    visible: widget.vis,
                   ),
-                  Container(
-                    width: 120,
-                    height: 30,
-                    child: FloatingActionButton(
-                        heroTag: '',
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          "Reject Order",
-                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
-                        ),
-                        onPressed: () {
-                          //Navigator.pushNamed(context, '/order_details');
-                          //MaterialPageRoute(builder: (context) => orderTemplate()),
-                        }
+                  Visibility(
+
+                    child:
+                    Container(
+                      width: 120,
+                      height: 30,
+                      child: FloatingActionButton(
+                          heroTag: '',
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                          child: Text(
+                            "Reject Order",
+                            style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.orange),
+                          ),
+                          onPressed: () {
+                            //Navigator.pushNamed(context, '/order_details');
+                            //MaterialPageRoute(builder: (context) => orderTemplate()),
+                          }
+                      ),
                     ),
+
+                    visible: widget.vis ,
                   ),
+
                   Container(
                     width: 120,
                     height: 30,
@@ -89,10 +169,12 @@ class order_request extends StatelessWidget {
       ),
     );
   }
+
 }
 
+Widget orderInfoTemplate(String name,String date, String price,String status){
 
-Widget orderInfoTemplate(String name,String date, String price){
-  return order_request(name:name,date:date, price:price);
+  return order_request(name:name,date:date, price:price ,status:status);
 }
+
 
