@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/pages/order_nav.dart';
 import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
-void main(){
-  runApp(
-    MaterialApp(home:Admin())
-  );
+
+void main() {
+  runApp(MaterialApp(home: Admin()));
 }
+
 class Admin extends StatefulWidget {
   @override
   _AdminState createState() => _AdminState();
 }
+
 class _AdminState extends State<Admin> {
-  Map mymap= {
+  TabController _tabController;
+  int _selectedDestination = 0;
+  List<Widget> not_reply = [
+    orderInfoTemplate("moamen", "22/4/2020", "99", ""),
+    orderInfoTemplate("osama", "22/4/2020", "100", ""),
+    orderInfoTemplate("osama", "22/4/2020", "100", "")
+  ];
+  List<Widget> Accept = [
+    orderInfoTemplate("moa34men", "22/4/2020", "939", "com"),
+    orderInfoTemplate("moam433en", "22/4/2020", "9459", "com")
+  ];
+  List<Widget> Reject = [orderInfoTemplate("osama", "22/4/2020", "100", "rej")];
+  Map mymap = {
     '': {
       '': ['', '', ''],
     },
@@ -28,74 +42,169 @@ class _AdminState extends State<Admin> {
           backgroundColor: Colors.red,
           title: Text(
             "Pharmacy App",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           centerTitle: true,
-
           bottom: TabBar(
             tabs: [
-              Tab(icon: Icon(Icons.inventory),text: "Inventory",),
-              Tab(icon: Icon(Icons.add_shopping_cart),text: "Orders"),
+              Tab(
+                icon: Icon(Icons.inventory),
+                text: "Inventory",
+              ),
+              Tab(icon: Icon(Icons.add_shopping_cart), text: "Orders"),
             ],
           ),
         ),
         body: TabBarView(
           children: [
-            Column(
-              children: [
-                Table(
-                  defaultColumnWidth: FixedColumnWidth(120.0),
-                  border: TableBorder.all(
-                      color: Colors.red,
-                      style: BorderStyle.solid,
-                      width: 2),
-                    children: [
-                TableRow( children: [
-                Column(children:[Text('Drug_name', style: TextStyle(fontSize: 20.0))]),
-                  Column(children:[Text('Quantity', style: TextStyle(fontSize: 20.0))]),
-                 Column(children:[Text('Category', style: TextStyle(fontSize: 20.0))]),
-          ]),]
-
-      ),
-                Table(
-                defaultColumnWidth: FixedColumnWidth(120.0),
-        border: TableBorder.all(
-                color: Colors.red,
-                style: BorderStyle.solid,
-                width: 2),
-        children:getrowdata(mymap),
-      ),
-              ],
-            ),
             ListView(
-              children: [
-                orderInfoTemplate("moamen","22/4/2020" , "99",""),
-                orderInfoTemplate("osama","22/4/2020" , "100",""),
-                orderInfoTemplate("moame4n","22/4/2020" , "444","rej"),
-                orderInfoTemplate("moam433en","22/4/2020" , "9459","com"),
-                orderInfoTemplate("moa34men","22/4/2020" , "939","com"),
-                orderInfoTemplate("osama","22/4/2020" , "100",""),
-                orderInfoTemplate("osama","22/4/2020" , "100","rej"),
-              ],
+              children: getrowdata(mymap),
             ),
+            order_nav(not_reply, Accept, Reject),
           ],
+          controller: _tabController,
         ),
       ),
     );
-
   }
 
-  List<TableRow> getrowdata(Map <dynamic,dynamic> map){
-    List<TableRow> row= [];
+  void selectDestination(int index) {
+    setState(() {
+      _selectedDestination = index;
+    });
+  }
 
-    for(int p=0 ; p<map.length ; p++){
-
-
-      row.add(TableRow( children: [
-        Column(children:[Text("index 1")]),
-        Column(children:[Text('index 2')]),
-        Column(children:[Text('index 3')]),
-      ]));
+  List<Container> getrowdata(Map<dynamic, dynamic> map) {
+    List<Container> row = [];
+    row.add(Container(
+      alignment: Alignment.centerRight,
+      child: Container(
+          width: MediaQuery.of(context).size.width * 0.6,
+          child: Row(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.4,
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search by Drug Name',
+                    hintStyle: TextStyle(fontSize: 15, color: Colors.red),
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.search,
+                color: Colors.red,
+                size: 20,
+              ),
+              Container(
+                height: 30,
+                child: FloatingActionButton(
+                    heroTag: '',
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(0.0))),
+                    child: Text(
+                      "search",
+                      style: TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    onPressed: () {
+                      // Navigator.pushNamed(context, '/order_details');
+                      //MaterialPageRoute(builder: (context) => orderTemplate()),
+                    }),
+              )
+            ],
+          )),
+    ));
+    row.add(Container(
+      height: 10,
+    ));
+    row.add(Container(
+      child: Row(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.33,
+            child: Center(
+              child: Text(
+                "Drug_Name",
+                style: TextStyle(fontSize: 25, color: Colors.red),
+              ),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.33,
+            child: Center(
+              child: Text(
+                "Quantity",
+                style: TextStyle(fontSize: 25, color: Colors.red),
+              ),
+            ),
+          ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.33,
+            child: Center(
+              child: Text(
+                "Category",
+                style: TextStyle(fontSize: 25, color: Colors.red),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ));
+    for (int p = 0; p < 3; p++) {
+      row.add(Container(
+        child: Container(
+          child: Center(
+            child: Row(
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.33,
+                  decoration: BoxDecoration(
+                      gradient:
+                          LinearGradient(colors: [Colors.red, Colors.orange])),
+                  child: Center(
+                    child: Text(
+                      "index1",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.33,
+                  decoration: BoxDecoration(
+                      gradient:
+                          LinearGradient(colors: [Colors.red, Colors.orange])),
+                  child: Center(
+                    child: Text(
+                      "index2",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.33,
+                  decoration: BoxDecoration(
+                      gradient:
+                          LinearGradient(colors: [Colors.red, Colors.orange])),
+                  child: Center(
+                    child: Text(
+                      "index3",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ));
+      row.add(Container(
+        height: 10,
+      ));
     }
     return row;
   }

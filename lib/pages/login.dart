@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app_pharmacy/data/user.dart';
 import 'package:http/http.dart' as http;
+//import 'dart:convert';
 
 class Login extends StatefulWidget {
   @override
@@ -18,27 +19,20 @@ class _LoginState extends State<Login> {
     //var loginURI = 'http://localhost:3000/users/login';
     //Android studio uses 10.0.2.2 as an alias for localhost
     var loginURI = Uri.http('10.0.2.2:3000', 'users/login');
-    print("111");
     final response = await http.post(loginURI, body: {
       'user_email': emailController.text,
       'user_password': passwordController.text
     });
-    print("222");
     final String responseString = response.body;
     print(responseString);
     User user = userFromJson(responseString);
-    print(user.toString());
-    //sleep(Duration(seconds:2));
-    //await Future.delayed(Duration(seconds: 2));
     if (response.statusCode == 200) {
       //All is well
       setState(() {
         _user = user;
       });
-      Navigator.pushReplacementNamed(context, '/home', arguments: {
-        'user_name': _user.userName,
-        'token': _user.token
-      });
+      Navigator.pushReplacementNamed(context, '/home',
+          arguments: {'user_name': _user.userName, 'token': _user.token});
     }
   }
 
@@ -58,7 +52,8 @@ class _LoginState extends State<Login> {
           backgroundColor: Colors.red,
           title: Text(
             "Pharmacy App",
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
+            style: TextStyle(
+                fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           centerTitle: true,
         ),
@@ -66,23 +61,25 @@ class _LoginState extends State<Login> {
             color: Colors.white,
             child: ListView(
               children: <Widget>[
-                 Container(
-                   height: 90,
-                   width: MediaQuery.of(context).size.width,
-                   child: Center(
-                     child: Text(
-                        "Login",
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.red),
-                      ),
-                   ),
-                 ),
-
+                Container(
+                  height: 90,
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(
+                    child: Text(
+                      "Login",
+                      style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red),
+                    ),
+                  ),
+                ),
                 Container(
                   width: MediaQuery.of(context).size.width,
                   height: 100,
                   child: Center(
                     child: Container(
-                      width: (MediaQuery.of(context).size.width*70)/100,
+                      width: (MediaQuery.of(context).size.width * 70) / 100,
                       child: TextFormField(
                         controller: emailController,
                         decoration: InputDecoration(
@@ -92,36 +89,40 @@ class _LoginState extends State<Login> {
                                 color: Colors.red,
                               ),
                             ),
-                            labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
+                            labelStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red),
                             labelText: "Enter your email"),
                       ),
                     ),
                   ),
                 ),
-
-                   Container(
-                     width: MediaQuery.of(context).size.width,
-                    height: 90,
-                    child: Center(
-                      child: Container(
-                        width: (MediaQuery.of(context).size.width*70)/100,
-                        child: TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                borderSide: BorderSide(
-                                  color: Colors.red,
-                                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 90,
+                  child: Center(
+                    child: Container(
+                      width: (MediaQuery.of(context).size.width * 70) / 100,
+                      child: TextFormField(
+                        controller: passwordController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Colors.red,
                               ),
-                              labelStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),
-                              labelText: "Enter your Password"),
-                        ),
+                            ),
+                            labelStyle: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red),
+                            labelText: "Enter your Password"),
                       ),
                     ),
                   ),
-
+                ),
                 Padding(
                   padding: EdgeInsets.fromLTRB(30, 60, 30, 40),
                   child: Row(
@@ -129,44 +130,52 @@ class _LoginState extends State<Login> {
                     children: <Widget>[
                       Expanded(
                           child: Container(
-                            height: 40,
-                            child: FloatingActionButton(
-                                heroTag: 'Login button',
-                                backgroundColor: Colors.red,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                                child: Text(
-                                  "Login",
-                                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
-                                ),
-                                onPressed: () async {
-                                  //final User user = await createUser();
-                                  signIn();
-                                  //Navigator.pushReplacementNamed(context, '/home');
-                                }),
-                          )),
+                        height: 40,
+                        child: FloatingActionButton(
+                            heroTag: 'Login button',
+                            backgroundColor: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0))),
+                            child: Text(
+                              "Login",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                            onPressed: () async {
+                              //final User user = await createUser();
+                              signIn();
+                              //Navigator.pushReplacementNamed(context, '/home');
+                            }),
+                      )),
                       Expanded(
                         child: Container(
                           height: 40,
                           child: FloatingActionButton(
                               heroTag: 'Register button',
                               backgroundColor: Colors.red,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(15.0))),
                               child: Text(
                                 "Register",
-                                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               ),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(context, '/register');
-                              }
-                          ),
+                                Navigator.pushReplacementNamed(
+                                    context, '/register');
+                              }),
                         ),
                       )
                     ],
                   ),
                 ),
               ],
-            )
-        )
-    );
+            )));
   }
 }

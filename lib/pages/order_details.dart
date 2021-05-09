@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/widgets/data_row.dart';
 
-
 class Order_D extends StatefulWidget {
   @override
   _Order_DState createState() => _Order_DState();
@@ -28,53 +27,44 @@ class _Order_DState extends State<Order_D> {
         ),
         centerTitle: true,
       ),
-
       body: Container(
         child: Column(
           children: <Widget>[
-            Row(
-                children: <Widget>[
-                  Icon(
-                    Icons.account_box,
+            Row(children: <Widget>[
+              Icon(
+                Icons.account_box,
+                color: Colors.red,
+                size: 30,
+              ),
+              Text(
+                "Person Name",
+                style: TextStyle(
+                    fontSize: 20,
                     color: Colors.red,
-                    size: 30,
-                  ),
-                  Text(
-                    "Person Name",
-                    style: TextStyle(fontSize: 20,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ]
-            ),
+                    fontWeight: FontWeight.bold),
+              ),
+            ]),
             Container(
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width,
+              width: MediaQuery.of(context).size.width,
               height: 100,
               child: Center(
                 child: Text(
                   "Order_Details",
-                  style: TextStyle(fontSize: 20,
+                  style: TextStyle(
+                      fontSize: 20,
                       color: Colors.red,
                       fontWeight: FontWeight.bold),
                 ),
               ),
             ),
             Container(
-              height: MediaQuery
-                  .of(context)
-                  .size
-                  .height * 50 / 100,
-              width: MediaQuery
-                  .of(context)
-                  .size
-                  .width * 80 / 100,
+              height: MediaQuery.of(context).size.height * 50 / 100,
+              width: MediaQuery.of(context).size.width * 80 / 100,
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Colors.redAccent,
-                ),),
+                ),
+              ),
               child: ListView(
                 children: <Widget>[
                   Row(
@@ -82,7 +72,8 @@ class _Order_DState extends State<Order_D> {
                     children: <Widget>[
                       Text(
                         "Order_item",
-                        style: TextStyle(fontSize: 20,
+                        style: TextStyle(
+                            fontSize: 20,
                             color: Colors.red,
                             fontWeight: FontWeight.bold),
                       ),
@@ -94,7 +85,8 @@ class _Order_DState extends State<Order_D> {
                           ),
                           Text(
                             "Quantity",
-                            style: TextStyle(fontSize: 20,
+                            style: TextStyle(
+                                fontSize: 20,
                                 color: Colors.red,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -108,7 +100,8 @@ class _Order_DState extends State<Order_D> {
                           ),
                           Text(
                             "Price",
-                            style: TextStyle(fontSize: 20,
+                            style: TextStyle(
+                                fontSize: 20,
                                 color: Colors.red,
                                 fontWeight: FontWeight.bold),
                           ),
@@ -130,7 +123,6 @@ class _Order_DState extends State<Order_D> {
                   dataRowTemplate(item: "item12", qun: "9", price: "180"),
                   dataRowTemplate(item: "item13", qun: "9", price: "180"),
                   dataRowTemplate(item: "item14", qun: "9", price: "180"),
-
                 ],
               ),
             )

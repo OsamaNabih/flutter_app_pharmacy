@@ -8,7 +8,7 @@ router.route('/register')
 router.route('/:id')
     .get(checkToken, user_controller.getUserById);
 
-router.route('/:id/orders')
+router.route('/:user_id/orders')
     .get(checkToken, user_controller.getUserOrders);
 
 

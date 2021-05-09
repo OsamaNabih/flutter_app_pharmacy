@@ -16,31 +16,57 @@ class DataRow extends StatelessWidget{
   return Column(
     children: [
       Container(
-        height: MediaQuery.of(context).size.height*10/100,
+        height: MediaQuery.of(context).size.height*5/100,
         width: MediaQuery.of(context).size.width*80/100,
       ),
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Text(
-            "${item}",
-            style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
+          Container(
+            width: MediaQuery.of(context).size.width*0.265,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.red, Colors.orange])
+            ),
+            child: Center(
+              child: Text(
+                "${item}",
+                style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
-          Text(
-            "${qun}",
-            style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
+          Container(
+            width: MediaQuery.of(context).size.width*0.265,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.red, Colors.orange])
+            ),
+            child: Center(
+              child: Text(
+                "${qun}",
+                style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
-          Text(
-            "${price}",
-            style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
+          Container(
+            width: MediaQuery.of(context).size.width*0.265,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    colors: [Colors.red, Colors.orange])
+            ),
+            child: Center(
+              child: Text(
+                "${price}",
+                style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
+              ),
+            ),
           ),
         ],
       ),
       Container(
-        height: MediaQuery.of(context).size.height*0.5/100,
-        width: MediaQuery.of(context).size.width*80/100,
+        height: 5,
       ),
-    ]                    ,
+    ] ,
   );
 }
 }

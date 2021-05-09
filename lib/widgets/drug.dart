@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/data/cart.dart';
+import 'package:flutter_app_pharmacy/data/drug_item.dart';
+import 'package:path/path.dart';
+import 'package:flutter_app_pharmacy/widgets/drug.dart';
+Widget drugTemplate(String name,String price, Function showDialog){
+  Text txt_name=Text("Name :${name}" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),);
+  Text txt_price=Text("Price :$price" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),);
 
-Widget drugTemplate(String name,String price){
   return Card(
     color: Colors.amber,
     child: Column(
@@ -9,23 +15,16 @@ Widget drugTemplate(String name,String price){
         ListTile(
           leading:
              CircleAvatar(
-                child: Image.asset('images/image1.jpg'),
+                //child: Image.asset('images/image1.jpg'),
                 radius: 30,
              ),
-          title: Text("${name}" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),),
-          subtitle: Text("Price :$price" , style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold),),
+          title: txt_name ,
+          subtitle: txt_price,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              width: 70,
-              height: 40,
-              child: TextField(
-                decoration: new InputDecoration(labelText: "Enter quantity", labelStyle: TextStyle(color:Colors.red, fontSize: 15)),
-                keyboardType: TextInputType.number,
-              ),
-            ),
+
             Container(
               width: 120,
               height: 30,
@@ -38,8 +37,23 @@ Widget drugTemplate(String name,String price){
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                   onPressed: () {
-                    //Navigator.pushNamed(context, '/order_details');
-                    //MaterialPageRoute(builder: (context) => orderTemplate()),
+                    int r=0;
+                    cart p;
+                    for(int y=0 ; y<p.drugs.length; y++){
+                      print("dd");
+                      if(p.drugs[y].item_name== txt_name.data){
+                        r=1;
+                        p.remove_drug(p.drugs[y]);
+                        p.add_drug(item_drug(txt_name.data, p.drugs[y].quantity+1));
+                        print(p.drugs.length);
+                        break;
+                      }
+                    }
+                    if(r==0){
+                      p.add_drug(item_drug(txt_name.data, 1));
+                      print(item_drug(txt_name.data, 1));
+                      print(p.drugs);
+                    }
                   }
               ),
             ),
@@ -55,8 +69,7 @@ Widget drugTemplate(String name,String price){
                     style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white),
                   ),
                   onPressed: () {
-                    //Navigator.pushNamed(context, '/order_details');
-                    //MaterialPageRoute(builder: (context) => orderTemplate()),
+                    showDialog();
                   }
               ),
             ),

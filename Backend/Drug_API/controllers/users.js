@@ -42,8 +42,10 @@ module.exports = {
     },
     loginUser: async(req, res, next) => {
         const db = await getDatabase(db_config);
-        try {            
-            let exists = await db.query(user_model.getUserByEmail, req.body.user_email);
+        try {      
+            console.log(req.body);
+            console.log(typeof(req.body));      
+            let exists = await db.query(user_model.getUserByEmail, req.body.user_email);  
             db.close();
             if (exists.length == 0) {
                 console.log('Invalid email or password');
@@ -90,7 +92,7 @@ module.exports = {
     getUserOrders: async (req, res, next) => {
         const db = await getDatabase(db_config);
         try {
-            let orders = await db.query(order_model.getUserOrders, req.params.id);
+            let orders = await db.query(order_model.getUserOrders, req.params.user_id);
 
             let promises = [];
             
@@ -98,20 +100,20 @@ module.exports = {
                 promises[i] = db.query(order_model.getOrderDrugs, orders[i].order_id);
             }
 
-            order_drugs = structuredClone(orders);
-
+            let total_spent = await db.query(user_model.getTotalSpent, req.params.user_id);
+            
             promises = await Promise.all(promises).then(async (result) => {
                 db.close();
                 return result;
             });
             
             for(let i = 0; i < promises.length; i++) {
-                order_drugs[i]['drugs'] = promises[i];
+                orders[i]['drugs'] = promises[i];
             }
             
-            data = {
-                orders: orders,
-                orders_drugs: order_drugs
+            let data = {
+                total_spent: total_spent[0].total_spent,
+                order_drugs: orders
             };
 
             //console.log(result);

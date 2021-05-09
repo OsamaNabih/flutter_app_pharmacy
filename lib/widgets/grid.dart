@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_pharmacy/widgets/drug.dart';
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 
 class Grid extends StatefulWidget {
@@ -27,7 +26,7 @@ class _GridState extends State<Grid> {
     print('get drugs');
     //print(drugs);
     drugs.forEach((drug) {
-      drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice.toString()));
+      //drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice.toString()));
     });
     //drugs.map((drug) => drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice.toString())));
     //print(drugWidgets);
@@ -38,8 +37,6 @@ class _GridState extends State<Grid> {
   Widget build(BuildContext context) {
     return Flexible(
       child: ListView(
-
-
         // Generate 100 widgets that display their index in the List.
         children: _getDrugs(),
       ),
