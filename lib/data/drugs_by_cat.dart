@@ -30,25 +30,25 @@ class Welcome {
 
 class DrugsByCat {
   DrugsByCat({
-    this.categories,
     this.categoryDrugs,
   });
 
-  List<Category> categories;
   List<CategoryDrug> categoryDrugs;
 
   factory DrugsByCat.fromJson(Map<String, dynamic> json) => DrugsByCat(
-    categories: List<Category>.from(json["categories"].map((x) => Category.fromJson(x))),
     categoryDrugs: List<CategoryDrug>.from(json["category_drugs"].map((x) => CategoryDrug.fromJson(x))),
   );
 
   Map<String, dynamic> toJson() => {
-    "categories": List<dynamic>.from(categories.map((x) => x.toJson())),
     "category_drugs": List<dynamic>.from(categoryDrugs.map((x) => x.toJson())),
   };
 
   int getLength() {
     return this.categoryDrugs.length;
+  }
+
+  List<CategoryDrug> getCatDrugs() {
+    return this.categoryDrugs;
   }
 }
 
@@ -100,6 +100,27 @@ class CategoryDrug {
   }
 }
 
+class Item{
+  Item({this.drugs});
+  List<Drug> drugs=[];
+
+  factory Item.fromJson(Map<String, dynamic> json) => Item(
+
+
+    drugs: List<Drug>.from(json["order"].map((x) => Drug.fromJson(x))),
+  );
+
+  Map<String, dynamic> toJson() => {
+
+    "order": List<dynamic>.from(drugs.map((x) => x.toJson())),
+  };
+
+
+
+}
+
+
+
 class Drug {
   Drug({
     this.drugId,
@@ -125,7 +146,7 @@ class Drug {
     drugId: json["drug_id"],
     drugName: json["drug_name"],
     drugPrice: json["drug_price"],
-    drugQuantity: json["drug_quantity"],
+    drugQuantity: json["drug_quantity"] == null ? json["order_drug_quantity"] : json["drug_quantity"],
     drugDescription: json["drug_description"],
     drugCategoryId: json["drug_category_id"],
     drugTypeId: json["drug_type_id"],

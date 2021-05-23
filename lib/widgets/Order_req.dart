@@ -10,7 +10,7 @@ class order_request extends StatefulWidget {
   bool vis2 = false;
   Color color;
   order_request({this.name, this.date, this.price, this.status}) {
-    if (status == "com") {
+    if (status == "Approved") {
       vis = false;
       vis1 = true;
       vis2 = false;
@@ -64,7 +64,7 @@ class _order_requestState extends State<order_request> {
               title: Text(
                 "Date : ${widget.date}",
                 style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
               ),
               subtitle: Text(
                 "Price :${widget.price}",

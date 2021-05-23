@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import 'package:flutter_app_pharmacy/widgets/data_row.dart';
+import 'package:flutter_app_pharmacy/widgets/data_row.dart' as DrugDataRow;
 
 class Order_D extends StatefulWidget {
   @override
@@ -7,16 +9,32 @@ class Order_D extends StatefulWidget {
 }
 
 class _Order_DState extends State<Order_D> {
-  int selected = 0;
-
+  int selected = 2;
+  var args;
+  Item list_of_drug;
+  String user_name;
+  List<Drug> drugs=[];
   void _onItemTapped(int index) {
     setState(() {
       selected = index;
     });
   }
 
+  List<DrugDataRow.DataRow> getDrugDataRows() {
+    print('Quantity: ${drugs[0].drugQuantity}');
+    return List<DrugDataRow.DataRow>.from(drugs.map((drug) => dataRowTemplate(item: drug.drugName, quantity: drug.drugQuantity, price: drug.drugPrice)));
+  }
+
   @override
   Widget build(BuildContext context) {
+
+    args = ModalRoute.of(context).settings.arguments;
+
+    drugs=args['DrugObject'];
+    user_name = args['user_name'];
+
+    print(drugs[0].drugName);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
@@ -37,7 +55,7 @@ class _Order_DState extends State<Order_D> {
                 size: 30,
               ),
               Text(
-                "Person Name",
+                user_name,
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.red,
@@ -109,20 +127,8 @@ class _Order_DState extends State<Order_D> {
                       )
                     ],
                   ),
-                  dataRowTemplate(item: "item1", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item2", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item3", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item4", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item5", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item6", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item7", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item8", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item9", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item10", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item11", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item12", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item13", qun: "9", price: "180"),
-                  dataRowTemplate(item: "item14", qun: "9", price: "180"),
+                  ...getDrugDataRows(),
+                  //dataRowTemplate(item: "item1", qun: "9", price: "180"),
                 ],
               ),
             )
@@ -155,3 +161,4 @@ class _Order_DState extends State<Order_D> {
 Widget orderTemplate() {
   return Order_D();
 }
+

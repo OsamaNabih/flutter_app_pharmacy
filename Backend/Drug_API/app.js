@@ -2,10 +2,7 @@ const http = require('http');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan')
-
-
 //const bodyParser = require('body-parser');
-
 /*
 const passport = require('passport');
 const passportUser = require('./passport').passportUser;
@@ -38,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(process.env.APP_PORT, () => {
-    console.log('Listening on port', process.env.APP_PORT);
+    console.log('Listening on port',process.env.APP_PORT);
 });
-
+//process.env.APP_PORT
 module.exports = app;

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_pharmacy/data/drug_item.dart';
-import 'package:flutter_app_pharmacy/pages/add_to_list.dart';
 
 class cart extends ChangeNotifier{
   List<item_drug>drugs=[];

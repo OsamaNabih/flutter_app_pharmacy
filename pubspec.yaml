@@ -29,6 +29,7 @@ dependencies:
   path: ^1.8.0
   contactus: ^1.1.9
   provider: ^5.0.0
+  jwt_decode: ^0.3.1
 
 
 

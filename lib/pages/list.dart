@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
+import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
+import 'package:flutter_app_pharmacy/data/list_order.dart';
 import 'package:flutter_app_pharmacy/pages/home.dart';
 import 'package:flutter_app_pharmacy/pages/loading.dart';
 import 'package:flutter_app_pharmacy/pages/login.dart';
@@ -7,7 +10,7 @@ import 'package:flutter_app_pharmacy/widgets/card_info.dart';
 import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
 import 'add_to-list_page.dart';
 import 'order_details.dart';
-
+import 'dart:convert'; import 'package:http/http.dart' as http;
 class List_order extends StatefulWidget {
   @override
   _List_orderState createState() => _List_orderState();
@@ -15,11 +18,16 @@ class List_order extends StatefulWidget {
 
 class _List_orderState extends State<List_order> {
   final int selected = 2;
+  var args;
+  list_order list;
+
+
+
+
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => List_order()));
+
     }
     if (index == 1) {
       Navigator.of(context)
@@ -33,6 +41,10 @@ class _List_orderState extends State<List_order> {
 
   @override
   Widget build(BuildContext context) {
+
+    args = ModalRoute.of(context).settings.arguments;
+    list=args["order_object"];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
@@ -53,17 +65,21 @@ class _List_orderState extends State<List_order> {
               size: 30,
             ),
             Text(
-              "Person Name",
+              args["user_name"],
               style: TextStyle(
                   fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
             ),
           ])),
-          cardInfoTemplate("22/4/2020", "99", true),
-          cardInfoTemplate("23/4/2020", "77", true),
-          cardInfoTemplate("27/4/2020", "554", true),
-          cardInfoTemplate("26/9/2020", "54", false),
-          cardInfoTemplate("26//2020", "56", false),
-          cardInfoTemplate("2/5/2020", "45", true),
+
+          //Hardcoded data
+         /* cardInfoTemplate("22/4/2020", "99", "Approved"),
+          cardInfoTemplate("23/4/2020", "77", "Approved"),
+          cardInfoTemplate("27/4/2020", "554", "Delivered"),
+          cardInfoTemplate("26/9/2020", "54", "Rejected"),
+          cardInfoTemplate("26//2020", "56", "Shipping"),
+          cardInfoTemplate("2/5/2020", "45", "Pending Approval"),
+*/
+          ...item(list.orders),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -88,10 +104,13 @@ class _List_orderState extends State<List_order> {
     );
   }
 
-  void item(int r) {
-    Widget k;
-    for (int y = 0; y < r; y++) {
-      Widget k = cardInfoTemplate("order date", "order price", true);
+  List<Widget> item(List<order> ord) {
+    List<Widget> cards=[];
+
+ for (int y = 0; y < ord.length; y++) {
+      cards.add(cardInfoTemplate(ord[y].order_date, "${ord[y].Total_Cost}", ord[y].order_status_name,ord[y].order_id));
+
     }
+    return cards;
   }
 }

@@ -19,7 +19,7 @@ void main() => runApp(MultiProvider(
         return MaterialApp(
           initialRoute: '/login',
           routes: {
-            //: (context) => Loading(),
+            //: (context) => Loading(),),
             '/home': (context) => Home(),
             '/login': (context) => Login(),
             '/register': (context) => Register(),

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-Widget dataRowTemplate({String item, String qun, String price}) {
-  return DataRow(item:item, qun:qun, price:price);
+Widget dataRowTemplate({@required String item, @required int quantity, @required int price}) {
+  return DataRow(item:item, quantity:quantity, price:price);
 }
 
 class DataRow extends StatelessWidget{
   final String item;
-  final String qun;
-  final String price;
+  final int quantity;
+  final int price;
 
-  DataRow({this.item, this.qun, this.price});
+  DataRow({this.item, this.quantity, this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class DataRow extends StatelessWidget{
             ),
             child: Center(
               child: Text(
-                "${qun}",
+                "${quantity}",
                 style: TextStyle(fontSize: 20 , color: Colors.black , fontWeight: FontWeight.bold),
               ),
             ),

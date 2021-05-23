@@ -9,7 +9,7 @@ router.route('/:id')
     .get(checkToken, user_controller.getUserById);
 
 router.route('/:user_id/orders')
-    .get(checkToken, user_controller.getUserOrders);
+    .get(user_controller.getUserOrders);
 
 
 router.route('/login')

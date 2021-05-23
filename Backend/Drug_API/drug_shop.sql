@@ -342,7 +342,10 @@ INSERT INTO `orders` (`order_id`, `order_date`, `user_id`, `order_status_id`, `o
 (6, '2019-10-13 12:46:29', 15, 3, 'Nunc purus.'),
 (7, '2021-01-11 21:24:35', 6, 2, 'Phasellus sit amet erat.'),
 (8, '2019-04-15 06:41:19', 13, 3, 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'),
-(9, '2019-11-06 15:23:48', 1, 2, 'Praesent blandit.');
+(9, '2019-11-06 15:23:48', 1, 2, 'Praesent blandit.'),
+(10, '2021-05-20 15:23:48', 16, 1, '4th floor'),
+(11, '2021-05-18 10:00:48', 16, 2, '4th floor'),
+(12, '2021-05-10 12:23:48', 16, 3, '4th floor');
 
 
 -- --------------------------------------------------------
@@ -376,7 +379,14 @@ INSERT INTO `order drugs` (order_drug_id, order_drug_quantity, order_id) VALUES
 (18, 1, 8),
 (3, 2, 8),
 (54, 4, 9),
-(111, 2, 9);
+(111, 2, 9),
+(7, 5, 10),
+(23, 1, 10),
+(2, 1, 10),
+(12, 2, 11),
+(4, 2, 11),
+(11, 1, 12),
+(19, 1, 12);
 
 -- --------------------------------------------------------
 
@@ -394,10 +404,11 @@ CREATE TABLE `order status` (
 --
 
 INSERT INTO `order status` (`order_status_id`, `order_status_name`) VALUES
-(1, 'Awaiting approval'),
+(1, 'Pending Approval'),
 (2, 'Approved'),
 (3, 'Shipping'),
-(4, 'Delivered');
+(4, 'Delivered'),
+(5, 'Rejected');
 
 -- --------------------------------------------------------
 
@@ -491,7 +502,7 @@ ALTER TABLE `drug types`
 -- Indexes for table `order drugs`
 --
 ALTER TABLE `order drugs`
-  ADD PRIMARY KEY (`order_drug_id`),
+  ADD PRIMARY KEY (`order_drug_id`, `order_id`),
   ADD KEY `order_id` (`order_id`);
 
 --

@@ -1,15 +1,16 @@
-//import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/pages/list.dart';
 import 'package:flutter_app_pharmacy/widgets/category.dart';
 import 'package:flutter_app_pharmacy/widgets/grid.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
+import 'package:flutter_app_pharmacy/data/list_order.dart';
 import 'package:flutter_app_pharmacy/widgets/drug.dart';
 import 'add_to-list_page.dart';
 import 'package:vertical_navigation_bar/vertical_navigation_bar.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -17,38 +18,61 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  int userId;
+  int catSelected = 0;
+  List<CategoryDrug> drugsByCat;
   int selected = 0;
   List<bool> isCatSelected = [];
   String c = "Category 1";
-  Map user_data = {};
-  DrugsByCat _drugs_by_cat;
-  List<Widget> catNames = [];
+  Map args = {};
+  List<Widget> categories = [];
+  List<String> catNames;
   List<Drug> drugs = [];
   Widget app;
   var init;
+  String userName;
   final pageController = PageController(initialPage: 0, keepPage: true);
 
-  final navItems = [
-    SideNavigationItem(title: "Category 1"),
-    SideNavigationItem(title: "Category 2"),
-    SideNavigationItem(title: "Category 3"),
-    SideNavigationItem(title: "Category 4"),
-  ];
+  final List<SideNavigationItem> navItems = [];
+
   final initialTab = 0;
 
+  void getlist_data() async{
+    var response;
+    print('getting list order data');
+    var dataURI = Uri.http('10.0.2.2:3000', 'orders/user/$userId');
+    print("Sending get order request");
+    response = await http.get(dataURI);
+    print("res_order");
+    if (response.statusCode != 200) {
+      throw ("Server error: ${response.body}");
+    }
+    final String responseString = response.body;
+    list_order list= list_order.fromJson(json.decode(responseString));
+    print("orders len == {list.getlen()}");
+
+    Navigator.pushReplacementNamed(context, '/list', arguments: {
+      'user_name': this.userName,
+      'order_object':list,
+    });
+
+  }
   void _onItemTapped(int index) {
     setState(() {
       selected = index;
     });
     if (index == 2) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => List_order()));
+      //orders = getUserOrders();
+      getlist_data();
+
     }
     if (index == 1) {
+      // Cart page
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Add_to_list()));
     }
     if (index == 0) {
+      // Home Page
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Home()));
     }
@@ -60,90 +84,54 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Future init_page() async {
-    await _getData();
-    _catNames();
-    _drugsInfo();
-    return Future(() => print('init done'));
-  }
-
-  Future _getData() async {
-    print('getting data');
-    var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
-    print("Sending get request");
-    final response = await http.get(dataURI);
-    print(response.statusCode);
-    final String responseString = response.body;
-    DrugsByCat drugsByCat = welcomeFromJson(responseString).drugsByCat;
-    //print(drugsByCat.toString());
-    if (response.statusCode == 200) {
-      print('success');
-      this._drugs_by_cat = drugsByCat;
-      //All is well
-
-      print(_drugs_by_cat.getLength());
-      for (int i = 0; i < drugsByCat.getLength(); i++) {
-        isCatSelected.add(true);
-      }
-
-      //await _drugsInfo();
-      //await _catNames();
-      /*setState(() {
-        this._drugs_by_cat = drugsByCat;
-      });
-      */
-
-      return Future(() => print('get req done'));
-    }
-  }
 
   String _userName() {
-    print(user_data.runtimeType);
-    print(user_data['user_name'].runtimeType);
-    return user_data == null ? 'Not logged in' : user_data['user_name'];
+    print(args.runtimeType);
+    print(args['user_name'].runtimeType);
+    return args == null ? 'Guest' : args['user_name'];
   }
 
-  void _catNames() {
-    print('catnames');
-    print(_drugs_by_cat.categoryDrugs);
-    //print(_drugs_by_cat.categories[0].categoryName);
-    List<Widget> catNames = [];
-    if (_drugs_by_cat == null) {
-      print('drugs are null');
+  void init_page() {
+    //catSelected = 0;
+    //print(args.toString());
+    //print(args);
+    Map<String, dynamic> payload = Jwt.parseJwt(args['token']);
+
+    userId = payload['user_id'];
+    userName = _userName();
+    print('Name: $userName, id: $userId');
+    this.catNames =  (args == null || args['cat_names'] == null) ? [] : args['cat_names'];
+    this.drugsByCat = (args == null || args['drugs_by_cat'] == null) ? [] : args['drugs_by_cat'];
+    this.drugs = drugsByCat == null ? [] : drugsByCat[catSelected].getDrugs();
+    if (this.navItems.length == 0) {
+      catNames.forEach((catName) {
+        //print(catName);
+        categories.add(category(catName, _onCategoryTapped));
+        this.navItems.add(SideNavigationItem(title: catName));
+      });
     }
-    _drugs_by_cat.categoryDrugs.forEach((cat) {
-      print(cat.categoryName);
-      catNames.add(category(cat.categoryName, _onCategoryTapped));
-    });
-    this.catNames = catNames;
   }
 
-  void _drugsInfo() {
-    print('drugsinfo');
-    int selected = isCatSelected.where((item) => item == true).length;
-    print('selected $selected');
-    List<Drug> drugs = [];
-    if (isCatSelected.length == 0) print('Empty');
-
-    print(_drugs_by_cat.categoryDrugs);
-    _drugs_by_cat.categoryDrugs.asMap().forEach((idx, cat_drugs) {
-      print(cat_drugs.getDrugs()[0].drugName);
-      if (isCatSelected[idx]) drugs.addAll(cat_drugs.getDrugs());
+  void updateDrugs() {
+    setState(() {
+      this.drugs = drugsByCat == null ? [] : drugsByCat[catSelected].getDrugs();
     });
-    this.drugs = drugs;
-    //return drugs;
   }
 
+  /*
   _HomeState() {
     print('Inside constructor');
-    this.init = init_page();
+    
     print('Finished constructor');
   }
+  */
 
   @override
   Widget build(BuildContext context) {
     print('build');
-    user_data = ModalRoute.of(context).settings.arguments;
+    args = ModalRoute.of(context).settings.arguments;
+    init_page();
+    print("Nav items length: ${navItems.length}");
     // var widgets = this.init.then((value) {
     return MaterialApp(
       title: "app",
@@ -156,8 +144,8 @@ class _HomeState extends State<Home> {
         body: Row(
           children: <Widget>[
             Container(
-                width: 70,
-                //height: MediaQuery.of(context).size.width*0.5,
+                width: MediaQuery.of(context).size.width * 0.25,
+                height: MediaQuery.of(context).size.height * 0.8,
                 child: Theme(
                   data: Theme.of(context).copyWith(
                     canvasColor: Colors.red,
@@ -165,6 +153,12 @@ class _HomeState extends State<Home> {
                   child: SideNavigation(
                     navItems: this.navItems,
                     itemSelected: (index) {
+                      setState(() {
+                        print('index: $index');
+                        this.catSelected = index;
+                        updateDrugs();
+                      });
+
                       pageController.animateToPage(index,
                           duration: Duration(milliseconds: 300),
                           curve: Curves.linear);
@@ -175,11 +169,15 @@ class _HomeState extends State<Home> {
                 )),
             Expanded(
               child: PageView.builder(
-                itemCount: 4,
+                itemCount: this.navItems.length,
                 controller: pageController,
                 scrollDirection: Axis.vertical,
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
+
+
+
+
                   return Container(
                     child: ListView(
                       children: <Widget>[
@@ -193,9 +191,7 @@ class _HomeState extends State<Home> {
                               size: 30,
                             ),
                             Text(
-                              //_userName(),
-                              "Moamen",
-
+                              userName,
                               style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.red,
@@ -203,18 +199,7 @@ class _HomeState extends State<Home> {
                             ),
                           ])),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          //children: this.catNames,
-                        ),
-                        drugTemplate("spoijafd", "44", showDialog),
-                        drugTemplate("hjhj", "7", showDialog),
-                        drugTemplate("dd", "6", showDialog),
-                        drugTemplate("ujtj", "46", showDialog),
-                        drugTemplate("ghg", "89", showDialog),
-                        drugTemplate("gghhg", "42", showDialog),
-
-                        // gridTemplate(),
+                        ...gridTemplate(this.drugs, showDialog),
                       ],
                     ),
                   );
@@ -250,7 +235,8 @@ class _HomeState extends State<Home> {
     //return this.app;
   }
 
-  void showDialog() {
+  void showDialog(String drug_desc) {
+    print('Inside showDialog');
     showGeneralDialog(
       barrierLabel: "Barrier",
       barrierDismissible: true,
@@ -289,7 +275,7 @@ class _HomeState extends State<Home> {
                         borderRadius: BorderRadius.all(Radius.circular(20))),
                     child: Center(
                       child: Text(
-                        "the description of the drug",
+                        drug_desc,
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.red,
