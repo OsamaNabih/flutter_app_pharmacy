@@ -8,31 +8,14 @@ class CardInfo extends StatelessWidget {
    String price;
    bool flag;
   String status;
-Function f;
+  Function f;
   Color color;
    Item drug_list;
    int drug_id;
 
 
 
-   Future GetDrugsData(int orderid) async{
-     var response;
-     print('getting orders data');
-     var dataURI = Uri.http('10.0.2.2:3000', 'orders/${orderid}');
-     print("Sending get orders request");
-     response = await http.get(dataURI);
-     print("res_orders");
-     if (response.statusCode != 200) {
-       throw ("Server error: ${response.body}");
-     }
-     final String responseString = response.body;
-     Item list= Item.fromJson(json.decode(responseString));
-     print("${list.drugs[0].drugName} pppppppp");
-     this.drug_list=list;
-     return Future(() {
-       print('adfsdf');
-     });
-   }
+
 
   CardInfo({this.date, this.price, this.status,this.f,this.drug_id}) {
     if (status == "Approved" || status == "Delivered") {
@@ -68,35 +51,37 @@ Function f;
             ),
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text("${status}",
-                  style: TextStyle(
-                      color: color, fontWeight: FontWeight.bold, fontSize: 20)),
               Container(
-                width: 120,
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width*0.46,
+
+                child: Text("${status}",
+                    style: TextStyle(
+                        color: color, fontWeight: FontWeight.bold, fontSize: 20)),
+              ),
+              Container(
+                alignment: Alignment.centerRight,
+                width: MediaQuery.of(context).size.width*0.46,
                 height: 30,
                 child: FloatingActionButton(
                     heroTag: '',
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                    child: Text(
-                      "View Order Details",
-                      style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.orange),
-                    ),
+                    child: Icon(
+                             Icons.info
+                             ),
                     onPressed: () async {
-                      await GetDrugsData(drug_id);
+                      this.drug_list = await GetDrugsData(drug_id);
                       print(this.drug_list.runtimeType);
                       print(this.drug_list == null);
                       print("${this.drug_list.drugs[0]} ssss");
 
 
                       Navigator.pushNamed(context, '/order_details', arguments: {
-                       'DrugObject':this.drug_list.drugs,
+                       'DrugObject': this.drug_list.drugs,
                         'user_name': args['user_name'],
                       });
                     }),
@@ -107,6 +92,22 @@ Function f;
       ),
     );
   }
+}
+
+Future<Item> GetDrugsData(int orderid) async {
+  var response;
+  print('getting orders data');
+  var dataURI = Uri.http('10.0.2.2:3000', 'orders/${orderid}');
+  print("Sending get orders request");
+  response = await http.get(dataURI);
+  print("res_orders");
+  if (response.statusCode != 200) {
+    throw ("Server error: ${response.body}");
+  }
+  final String responseString = response.body;
+  Item list= Item.fromJson(json.decode(responseString));
+  print("${list.drugs[0].drugName} pppppppp");
+  return list;
 }
 
 Widget cardInfoTemplate(String date, String price, String status,int id) {

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/data/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_app_pharmacy/pages/login.dart' as login;
+import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_app_pharmacy/services/login.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -18,25 +22,24 @@ class _RegisterState extends State<Register> {
 
   User _user;
 
-  void signIn() async {
-    var loginURI = Uri.http('localhost:3000', 'users/register');
-    print("111");
+  void signUp() async {
+    var loginURI = Uri.http('10.0.2.2:3000', 'users/register');
     final response = await http.post(loginURI, body: {
       "user_email": emailController.text,
       "user_password": passwordController.text,
       "user_name": nameController.text,
       "user_phone": phoneController.text
     });
-    print("222");
     final String responseString = response.body;
     print(responseString);
     User user = userFromJson(responseString);
     print(user.toString());
-    //sleep(Duration(seconds:2));
-    await Future.delayed(Duration(seconds: 2));
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      Navigator.pushReplacementNamed(context, '/home');
+
+    if (response.statusCode == 201) { // New resource created
+      // Store credentials in shared preference
+      storeUserPreferences(user);
+      // Redirect to home page
+      navigateToHome(context, user);
     }
   }
 
@@ -184,7 +187,8 @@ class _RegisterState extends State<Register> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  onPressed: () {}),
+                  onPressed: signUp
+              ),
             ),
           )
         ]),

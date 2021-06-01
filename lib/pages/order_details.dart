@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/data/drug_data_admin.dart';
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import 'package:flutter_app_pharmacy/widgets/data_row.dart';
 import 'package:flutter_app_pharmacy/widgets/data_row.dart' as DrugDataRow;
@@ -10,6 +11,7 @@ class Order_D extends StatefulWidget {
 
 class _Order_DState extends State<Order_D> {
   int selected = 2;
+  int total_price=0;
   var args;
   Item list_of_drug;
   String user_name;
@@ -22,7 +24,11 @@ class _Order_DState extends State<Order_D> {
 
   List<DrugDataRow.DataRow> getDrugDataRows() {
     print('Quantity: ${drugs[0].drugQuantity}');
-    return List<DrugDataRow.DataRow>.from(drugs.map((drug) => dataRowTemplate(item: drug.drugName, quantity: drug.drugQuantity, price: drug.drugPrice)));
+    return List<DrugDataRow.DataRow>.from(drugs.map((drug) {
+      this.total_price=this.total_price+(drug.drugPrice*drug.drugQuantity);
+      return dataRowTemplate(item: drug.drugName, quantity: drug.drugQuantity, price: drug.drugPrice);
+    }));
+
   }
 
   @override
@@ -85,75 +91,42 @@ class _Order_DState extends State<Order_D> {
               ),
               child: ListView(
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        "Order_item",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.confirmation_num_sharp,
-                            size: 20,
-                          ),
-                          Text(
-                            "Quantity",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.money,
-                            size: 20,
-                          ),
-                          Text(
-                            "Price",
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
+
                   ...getDrugDataRows(),
-                  //dataRowTemplate(item: "item1", qun: "9", price: "180"),
+
                 ],
               ),
-            )
+            ),
+            Container(
+              height: 30,
+              child: Center(
+                child: Text(
+                  " Total Cost ",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.red,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              height: 20,
+              child: Center(
+                child: Text(
+                  "${this.total_price}",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                       fontWeight: FontWeight.bold
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_shopping_cart),
-            label: 'Selected drugs',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'History',
-          ),
-        ],
-        currentIndex: selected,
-        selectedItemColor: Colors.red,
-        onTap: _onItemTapped,
-      ),
+
     );
   }
 }

@@ -17,72 +17,66 @@ class Admin extends StatefulWidget {
 class _AdminState extends State<Admin> {
   TabController _tabController;
   int _selectedDestination = 0;
-  All_Drugs list_drug;
-  All_orders list_orders;
-   _AdminState(){
-    getdrug_data();
-    getorders_data();
-  }
-  void getdrug_data()async{
-    var response;
-    print('getting drug data');
-    var dataURI = Uri.http('10.0.2.2:3000', 'drugs');
-    print("Sending get drugs request");
-    response = await http.get(dataURI);
-    print("res_drug");
-    if (response.statusCode != 200) {
-      throw ("Server error: ${response.body}");
+  All_Drugs drug_list;
+  All_orders order_list;
+  List<drug> drugs=[];
+  Map args = {};
+  Function view;
+  TextEditingController SearchWord = new TextEditingController();
+  ListView p;
+  List<Container> row = [];
+
+  List<drug> Search_Result(String word){
+    print(word);
+    List<drug> drugs=[];
+    for(int y=0 ; y< this.drug_list.drugs.length ; y++){
+
+      if(this.drug_list.drugs[y].drugName.contains(word)){
+        drugs.add(drug_list.drugs[y]);
+
+      }
     }
-    final String responseString = response.body;
-    All_Drugs list= All_Drugs.fromJson(json.decode(responseString));
-    print("drugs len ===${list.getlen()}");
-    print("${list.drugs[0].drugName}");
-    this.list_drug=list;
-
-  }
-
-  void getorders_data()async{
-    var response;
-    print('getting orders data');
-    var dataURI = Uri.http('10.0.2.2:3000', 'orders');
-    print("Sending get orders request");
-    response = await http.get(dataURI);
-    print("res_orders");
-    if (response.statusCode != 200) {
-      throw ("Server error: ${response.body}");
-    }
-    final String responseString = response.body;
-    All_orders list= All_orders.fromJson(json.decode(responseString));
-    print("orders len ===${list.getlen()}");
-    print("${list.orders[0].orderStatusName}");
-    this.list_orders=list;
-    order_state();
-
-  }
-
-  void order_state(){
-     for(int p=0; p< list_orders.orders.length ; p++){
-       if(list_orders.orders[p].orderStatusName=="Approved"){
-         this.Accept.add( orderInfoTemplate("moamen", list_orders.orders[p].orderDate,"90" , ""));
+    print(drugs[0].drugName);
+    return drugs;
+}
+  void order_state() {
+    if (Accept.length > 0 || Reject.length > 0 || not_reply.length > 0)
+      return;
+     for(int p=0; p< order_list.orders.length ; p++){
+       order_admin order = order_list.orders[p];
+       Widget orderWidget = orderInfoTemplate(id: order.orderId, name: order.userName, datetime: order.orderDate, price: order.orderPrice, status: order.orderStatusName);
+       if(order.orderStatusName=="Approved"){
+         this.Accept.add(orderWidget);
        }
-       if(list_orders.orders[p].orderStatusName=="Pending Approval"){
-         this.not_reply.add( orderInfoTemplate("moamen", list_orders.orders[p].orderDate,"90" , ""));
+       if(order.orderStatusName=="Pending Approval"){
+         this.not_reply.add(orderWidget);
        }
-       if(list_orders.orders[p].orderStatusName=="Rejected"){
-         this.Reject.add( orderInfoTemplate("moamen", list_orders.orders[p].orderDate,"90" , ""));
+       if(order.orderStatusName=="Rejected"){
+         this.Reject.add(orderWidget);
        }
      }
   }
-  List<Widget> not_reply = [
 
-  ];
-  List<Widget> Accept = [
-
-  ];
+  List<Widget> not_reply = [];
+  List<Widget> Accept = [];
   List<Widget> Reject = [];
 
   @override
+  /*void initState() async {
+    args = ModalRoute.of(context).settings.arguments;
+    this.drug_list = args['inventory_list'];
+  }*/
+
+  @override
   Widget build(BuildContext context) {
+   // initState();
+    args = ModalRoute.of(context).settings.arguments;
+    this.drug_list = args['inventory_list'];
+    this.order_list = args['order_list'];
+    this.drugs = this.drug_list.drugs;
+    order_state();
+    view = getrowdata;
+    view(this.drugs);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -107,7 +101,7 @@ class _AdminState extends State<Admin> {
         body: TabBarView(
           children: [
             ListView(
-              children: getrowdata(list_drug.drugs),
+              children: this.row,
             ),
             order_nav(not_reply, Accept, Reject),
           ],
@@ -121,10 +115,13 @@ class _AdminState extends State<Admin> {
       _selectedDestination = index;
     });
   }
+  List<Container> listview(List<drug> list){
 
-  List<Container> getrowdata( List<drug> list) {
-    List<Container> row = [];
-    row.add(Container(
+
+  }
+
+  Widget getSearchBar() {
+    return(Container(
       alignment: Alignment.centerRight,
       child: Container(
           width: MediaQuery.of(context).size.width * 0.6,
@@ -133,6 +130,7 @@ class _AdminState extends State<Admin> {
               Container(
                 width: MediaQuery.of(context).size.width * 0.4,
                 child: TextField(
+                  controller: SearchWord,
                   decoration: InputDecoration(
                     hintText: 'Search by Drug Name',
                     hintStyle: TextStyle(fontSize: 15, color: Colors.red),
@@ -159,136 +157,134 @@ class _AdminState extends State<Admin> {
                           color: Colors.white),
                     ),
                     onPressed: () {
-                      // Navigator.pushNamed(context, '/order_details');
-                      //MaterialPageRoute(builder: (context) => orderTemplate()),
+                      setState(() {
+                        this.drugs = Search_Result(SearchWord.text);
+                        this.row = getrowdata(this.drugs);
+                        print(drugs.length);
+                        print(row[0]);
+                      });
+
                     }),
               )
             ],
           )),
     ));
+  }
+
+
+  List<Container> getrowdata( List<drug> list) {
+    row.clear();
+    row.add(getSearchBar());
     row.add(Container(
       height: 10,
     ));
-    row.add(Container(
-      child: Row(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.33,
-            child: Center(
-              child: Text(
-                "Drug_Name",
-                style: TextStyle(fontSize: 20, color: Colors.red),
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.33,
-            child: Center(
-              child: Text(
-                "Quantity",
-                style: TextStyle(fontSize: 20, color: Colors.red),
-              ),
-            ),
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width * 0.33,
-            child: Center(
-              child: Text(
-                "Category",
-                style: TextStyle(fontSize: 20, color: Colors.red),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ));
+
     for (int p = 0; p < list.length; p++) {
       row.add(Container(
         child: Container(
           child: Center(
             child: Container(
               width: MediaQuery.of(context).size.width * 0.85,
-              child: Table(
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                border: Border.all(
+                  width: 2.0
+                ),
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(15.0) //
+                  ),
 
-                border: TableBorder.all(
-                    color: Colors.black,
-                    style: BorderStyle.solid,
-                    width: 2),
-                children: [
+            ),
 
-                  TableRow( children: [
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(10.0, 0, 0, 6.0),
+                child: Column(
+                  children: [
 
                     Container(
-                        decoration: BoxDecoration(
-                            gradient:
-                            LinearGradient(colors: [Colors.red, Colors.orange])),
-
-                        child: Column(children:[Text(list[p].drugName, style: TextStyle(fontSize: 20.0))])
+                      height: 5,
+                    ),
+                    Center(
+                      child: Text(
+                        list[p].drugName,
+                        style: TextStyle(fontFamily: 'Roboto',fontStyle: FontStyle.italic, fontSize: 18),
+                      ),
                     ),
                     Container(
-                        decoration: BoxDecoration(
-                            gradient:
-                            LinearGradient(colors: [Colors.red, Colors.orange])),
-                        child: Column(children:[Text("${list[p].drugQuantity}", style: TextStyle(fontSize: 20.0))])
-                    ),
-                    Container(
-                        decoration: BoxDecoration(
-                            gradient:
-                            LinearGradient(colors: [Colors.red, Colors.orange])),
-                        child: Column(children:[Text(list[p].categoryName, style: TextStyle(fontSize: 20.0))])
+                      height: 8,
+
                     ),
 
-                ],
+                        Row(
+                          children: [
+                            Text(
+                              "Quantity : ",
+                              style: TextStyle(fontSize: 15 ,color: Colors.yellowAccent),
+                            ),
+                            Text(
+                              "${list[p].drugQuantity}",
+                              style: TextStyle(fontSize: 13 ,color: Colors.black),
+
+
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                                "Company Name : ",
+                                style: TextStyle(fontSize: 15 ,color: Colors.yellowAccent),
+
+                            ),
+                            Text(
+                              "${list[p].drugCompanyName}",
+                              style: TextStyle(fontSize: 13 ,color: Colors.black),
+
+                            ),
+                          ],
+                        ),
+
+
+
+
+                        Row(
+                          children: [
+                            Text(
+                                "Price : ",
+                                style: TextStyle(fontSize: 15 ,color: Colors.yellowAccent)
+                            ),
+                            Text(
+                                 "${list[p].drugPrice}",
+                                style: TextStyle(fontSize: 13 ,color: Colors.black)
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                                "Category Name: ",
+                                style: TextStyle(fontSize: 15 ,color: Colors.yellowAccent)
+                            ),
+                            Text(
+                                "${list[p].categoryName}",
+                                style: TextStyle(fontSize: 13 ,color: Colors.black)
+                            ),
+                          ],
+                        ),
+
+
+
+                  ],
+                ),
               ),
-      ]),
             )
 
-            /*child: Row(
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.33,
-                  decoration: BoxDecoration(
-                      gradient:
-                          LinearGradient(colors: [Colors.red, Colors.orange])),
-                  child: Center(
 
-                    child: Text(
-                      list[p].drugName,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.33,
-                  decoration: BoxDecoration(
-                      gradient:
-                          LinearGradient(colors: [Colors.red, Colors.orange])),
-                  child: Center(
-                    child: Text(
-                      "${list[p].drugPrice}",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.33,
-                  decoration: BoxDecoration(
-                      gradient:
-                          LinearGradient(colors: [Colors.red, Colors.orange])),
-                  child: Center(
-                    child: Text(
-                      list[p].categoryName,
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ),
-              ],
-            ),*/
           ),
         ),
       ));
       row.add(Container(
-        height: 30,
+        height: 10,
       ));
     }
     return row;

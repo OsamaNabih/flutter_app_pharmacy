@@ -23,7 +23,9 @@ module.exports = {
                 err = 'A user already exists with this email';
                 return next(err);
             }
-            req.body.user_type_id = 1;
+            console.log(req.body);
+            req.body.user_type_id = req.body.user_type_id != null ? req.body.user_type_id : 1;
+            console.log(req.body.user_type_id);
             req.body.user_password = password_hash;
             let result = await db.query(user_model.insertUser, req.body);
             db.close();
@@ -31,9 +33,14 @@ module.exports = {
             let user_id = result['insertId']
             req.body.user_id = user_id;
             const jsontoken = sign({ user_id: user_id}, process.env.jwt_secret, {
-                expiresIn: '5h'
+                expiresIn: '72h'
             });
-            return res.status(201).json({message: "Registered successfully", user: req.body, token: jsontoken});
+            return res.status(201).json({
+                message: "Registered successfully",
+                user_name: req.body.user_name,
+                user_type: "1", 
+                token: jsontoken,
+            });
         } catch(err) {
             db.close();
             return next(err);
@@ -45,7 +52,7 @@ module.exports = {
         try {      
             console.log(req.body);
             console.log(typeof(req.body));      
-            let exists = await db.query(user_model.getUserByEmail, req.body.user_email);  
+            let exists = await db.query(user_model.getUserWithTypeByEmail, req.body.user_email);  
             db.close();
             if (exists.length == 0) {
                 console.log('Invalid email or password');
@@ -56,13 +63,15 @@ module.exports = {
             if (result) {
                 result.password = undefined;
                 const jsontoken = sign({ user_id: exists[0].user_id}, process.env.jwt_secret, {
-                    expiresIn: '5h'
+                    expiresIn: '72h'
                 });
                 console.log('Logged in successfully');
+                console.log(exists[0]);
                 return res.status(200).json({
                     message: 'Logged in successfully',
                     token: jsontoken,
-                    user_name: exists[0].user_name
+                    user_name: exists[0].user_name,
+                    user_type: exists[0].user_type_name
                 });
             } 
             else {

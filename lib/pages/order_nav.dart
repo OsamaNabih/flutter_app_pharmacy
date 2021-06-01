@@ -85,7 +85,7 @@ class _order_navState extends State<order_nav> with TickerProviderStateMixin {
     );
   }
 
-  List<TableRow> getrowdata(Map<dynamic, dynamic> map) {
+  /*List<TableRow> getrowdata(Map<dynamic, dynamic> map) {
     List<TableRow> row = [];
 
     for (int p = 0; p < map.length; p++) {
@@ -96,5 +96,5 @@ class _order_navState extends State<order_nav> with TickerProviderStateMixin {
       ]));
     }
     return row;
-  }
+  }*/
 }

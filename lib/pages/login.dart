@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import 'package:flutter_app_pharmacy/data/user.dart';
+import 'package:flutter_app_pharmacy/data/drug_data_admin.dart';
+import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
 import 'package:http/http.dart' as http;
-//import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
+import 'package:flutter_app_pharmacy/services/login.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -15,96 +19,26 @@ class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   User _user;
-  List<bool> isCatSelected = [];
   DrugsByCat _drugsByCat;
-  List<String> catNames = [];
+  List<String> _catNames = [];
   List<Drug> drugs = [];
 
+
   void signIn() async {
-    //var loginURI = 'http://localhost:3000/users/login';
-    //Android studio uses 10.0.2.2 as an alias for localhost
-    print("1");
     var loginURI = Uri.http('10.0.2.2:3000', 'users/login');
     var response = await http.post(loginURI, body: {
       'user_email': emailController.text,
       'user_password': passwordController.text
     });
-    print("2");
     final String responseString = response.body;
     //print(responseString);
     User user = userFromJson(responseString);
-    if (response.statusCode == 200) {
-      //All is well
-
-      print('getting data');
-      var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
-      print("Sending get request");
-      response = await http.get(dataURI);
-      if (response.statusCode != 200) {
-        throw ("Server error: ${response.body}");
-      }
-      //print(response.statusCode);
-      final String responseString = response.body;
-      //print(responseString);
-      DrugsByCat drugsByCat = welcomeFromJson(responseString).drugsByCat;
-      //print(drugsByCat.getLength());
-      for (int i = 0; i < drugsByCat.getLength(); i++) {
-        isCatSelected.add(true);
-      }
-      _drugsByCat = drugsByCat;
-      //await _drugsInfo();
-      await _catNames();
-
-      this._user = user;
-      print("4");
-      Navigator.pushReplacementNamed(context, '/home', arguments: {
-        'user_name': _user.userName,
-        'drugs_by_cat': drugsByCat.getCatDrugs(),
-        'cat_names': catNames,
-        'token': _user.token
-      });
+    if (response.statusCode == 200) { // Success
+      // Redirect to home page
+      navigateToHome(context, user);
     }
   }
 
-  /*
-  void _drugsInfo() {
-    print('drugsinfo');
-    int selected = isCatSelected.where((item) => item == true).length;
-    //print('selected $selected');
-    List<Drug> drugs = [];
-    if (isCatSelected.length == 0) print('Empty');
-
-    //print(_drugsByCat.categoryDrugs);
-    _drugsByCat.categoryDrugs.asMap().forEach((idx, cat_drugs) {
-      //print(cat_drugs.getDrugs()[0].drugName);
-      if (isCatSelected[idx]) drugs.addAll(cat_drugs.getDrugs());
-    });
-    this.drugs = drugs;
-    //return drugs;
-  }
-  */
-
-//pp
-  void _catNames() {
-    //print('catnames');
-    //print(_drugsByCat.categoryDrugs);
-    //print(_drugs_by_cat.categories[0].categoryName);
-    if (_drugsByCat == null) {
-      print('drugs are null');
-    }
-    _drugsByCat.categoryDrugs.forEach((cat) {
-      print(cat.categoryName);
-      catNames.add(cat.categoryName);
-    });
-  }
-
-  /*
-  void _onCategoryTapped(String name) {
-    setState(() {
-      c = name;
-    });
-  }
-  */
 
   @override
   void dispose() {
@@ -249,3 +183,4 @@ class _LoginState extends State<Login> {
             )));
   }
 }
+

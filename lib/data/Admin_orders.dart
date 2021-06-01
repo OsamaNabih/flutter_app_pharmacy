@@ -16,28 +16,34 @@ class All_orders{
 }
 class order_admin {
   order_admin({
-    this. orderStatusId,
-    this. orderId,
-    this. orderDate,
-    this. userId,
-    this. orderNote ,
-    this. orderStatusName,
+    this.orderStatusId,
+    this.orderId,
+    this.orderDate,
+    this.userId,
+    this.userName,
+    this.orderPrice,
+    this.orderNote ,
+    this.orderStatusName,
   });
   int orderStatusId;
   int  orderId;
   String orderDate;
   int userId;
+  String userName;
+  int orderPrice;
   String orderNote ;
   String orderStatusName;
 
 
   factory order_admin.fromJson(Map<String, dynamic> json) => order_admin(
-    orderStatusId:json["order_status_id"],
-    orderId:json["order_id"],
-    orderDate:json["order_date"],
-    userId :json["user_id"],
-    orderNote:json["order_note"],
-    orderStatusName:json["order_status_name"],
+    orderStatusId: json["order_status_id"],
+    orderId: json["order_id"],
+    orderDate: json["order_date"],
+    userId: json["user_id"],
+    userName: json["user_name"],
+    orderPrice: json["Total Cost"],
+    orderNote: json["order_note"],
+    orderStatusName: json["order_status_name"],
   );
 
   Map <String, dynamic> toJson() => {
@@ -45,8 +51,9 @@ class order_admin {
     "order_id": orderId,
     "order_date": orderDate,
     "user_id": userId,
+    "user_name": userName,
+    "order_price": orderPrice,
     "order_note": orderNote,
     "order_status_name": orderStatusName,
-
   };
 }

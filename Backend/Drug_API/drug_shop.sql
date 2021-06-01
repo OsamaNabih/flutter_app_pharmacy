@@ -345,7 +345,9 @@ INSERT INTO `orders` (`order_id`, `order_date`, `user_id`, `order_status_id`, `o
 (9, '2019-11-06 15:23:48', 1, 2, 'Praesent blandit.'),
 (10, '2021-05-20 15:23:48', 16, 1, '4th floor'),
 (11, '2021-05-18 10:00:48', 16, 2, '4th floor'),
-(12, '2021-05-10 12:23:48', 16, 3, '4th floor');
+(12, '2021-05-10 12:23:48', 16, 3, '4th floor'),
+(13, '2021-05-18 10:00:48', 16, 5, '4th floor'),
+(14, '2021-04-17 13:25:12', 18, 5, 'Thank you');
 
 
 -- --------------------------------------------------------
@@ -386,7 +388,13 @@ INSERT INTO `order drugs` (order_drug_id, order_drug_quantity, order_id) VALUES
 (12, 2, 11),
 (4, 2, 11),
 (11, 1, 12),
-(19, 1, 12);
+(19, 1, 12),
+(2, 1, 13),
+(5, 1, 13),
+(6, 1, 13),
+(9, 1, 14),
+(13, 2, 14),
+(17, 1, 14);
 
 -- --------------------------------------------------------
 
@@ -430,22 +438,27 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `user_name`, `user_email`, `user_password`, `user_phone`, `user_type_id`) VALUES
-(1, '21', 'wianne0@list-manage.com', 'TmEgy1cEl', '8678844809', 1),
-(2, '51', 'drainer1@mit.edu', 'Jpe6Up', '7136223076', 3),
-(3, '14', 'bstanhope2@plala.or.jp', 'FisRxr3n6b', '6154511336', 2),
-(4, '80', 'apendre3@mlb.com', 'kkIJGjDDvXyL', '2565836850', 3),
-(5, '41', 'rmcpharlain4@vinaora.com', 'Cjj5tii9Efg', '3013824732', 3),
-(6, '12', 'kmurrells5@businesswire.com', 'QizMflR', '4437888439', 2),
-(7, '23', 'aredrup6@cafepress.com', 'VnxJbT', '6928542138', 1),
-(8, '47', 'skarlsson7@howstuffworks.com', 'tumXeOaA', '5324977794', 2),
-(9, '77', 'mjodlowski8@oracle.com', 'G8bSNk', '7743935978', 3),
-(10, '70', 'dcahill9@admin.ch', 'GAHLbh7', '8573905518', 2),
-(11, '56', 'rhitzkea@archive.org', '85d8GKDQLi', '2063122135', 1),
-(12, '20', 'sstraughanb@reference.com', 'e7BxrU3ok', '6622070007', 2),
-(13, '81', 'vtschierschc@dailymail.co.uk', 'X7pVwMk', '6896796422', 3),
-(14, '57', 'tdeweyd@ted.com', 'D5TZh2', '3812221417', 3),
-(15, '34', 'wbeige@cnet.com', 'DVWEVfMOs', '6506321303', 1),
-(16, 'Osama Nabih', 'osos123@gmail.com', '$2b$10$ou82AeZCJLGEt8Rep6HrCe2eDyFFOyweRFtqpeb96msjlNx.Dclt2', '015382010', 1);
+(1, 'Arabella Shardlow', 'ashardlow0@surveymonkey.com', '1IWaq1MnpVHFZj', '6052070364', 1),
+(2, 'Aliza Rhodes', 'arhodes1@google.com.au', '0FvF2vYya6Uags', '2494024404', 2),
+(3, 'Flori Reinbach', 'freinbach2@independent.co.uk', 'Gg8wmThvkmdUpQ', '9947896992', 3),
+(4, 'Sven Stritton', 'sstritton3@spiegel.de', 'EYkNVJdxfdwQ63', '7273747950', 3),
+(5, 'Charmaine Idney', 'cidney4@state.gov', 'Xo2KxvCTNwmP8D', '8503693298', 1),
+(6, 'Edd Burkitt', 'eburkitt5@icq.com', 'ngacToRGtMcCq3', '4085689719', 2),
+(7, 'Winnie Von Oertzen', 'wvon6@indiatimes.com', 'Ope18ExyuutkWT', '1345498649', 2),
+(8, 'Euphemia Sprules', 'esprules7@ed.gov', '5YSk3u61nNaQ84', '9585563219', 3),
+(9, 'Lance Tookill', 'ltookill8@hugedomains.com', 'kBuyxBzjp2vLsh', '8709141921', 3),
+(10, 'Felike Mistry', 'fmistry9@123-reg.co.uk', 'zjFCIRQpRr8mgi', '7638345022', 2),
+(11, 'Phillie Mc Gaughey', 'pmca@xinhuanet.com', 'hWFSAP4u92u8xv', '4616477388', 1),
+(12, 'Alica Syres', 'asyresb@pinterest.com', 'XPyQgifH7KWmJB', '2363062472', 1),
+(13, 'Anallese Lofty', 'aloftyc@ow.ly', '6pQ8MvAaZmf9W5', '9257365080', 2),
+(14, 'Ginelle Gorman', 'ggormand@merriam-webster.com', '7DbM3uddZZRkKC', '4047826113', 3),
+(15, 'Heather Kulic', 'hkulice@craigslist.org', 'wIhZ4MvWxb3XmF', '6766609969', 3),
+(16, 'Osama Nabih', 'osos123@gmail.com', '$2b$10$ou82AeZCJLGEt8Rep6HrCe2eDyFFOyweRFtqpeb96msjlNx.Dclt2', '015382010', 1),
+(17, 'Moamen Tawfik', 'moamen123@gmail.com', '$2b$10$N21WvXqGyghCmve3lj617.0d2ElLBmMU4bmgF6CiZpufhI589Rgam', '010382010', 3),
+(18, 'Supercalifragilisticexpialidocious', 'longest_name@gmail.com', 'PVqeY6YFO029hD', '8015195583', 1);
+
+
+
 
 -- --------------------------------------------------------
 
@@ -628,8 +641,8 @@ COMMIT;
 -- Views
 CREATE VIEW `Users Orders`
 AS
-SELECT SUM(drug_price*order_drug_quantity) as `Total Cost`, user_id, order_id, order_status_name, order_date, order_note  
-FROM (Drugs JOIN (Orders NATURAL JOIN `Order drugs`) ON drug_id = order_drug_id) NATURAL JOIN `Order Status` 
+SELECT SUM(drug_price*order_drug_quantity) as `Total Cost`, user_id, user_name, order_id, order_status_name, order_date, order_note  
+FROM (Drugs JOIN (Orders NATURAL JOIN `Order drugs`) ON drug_id = order_drug_id) NATURAL JOIN `Order Status` NATURAL JOIN Users
 GROUP BY order_id;
 
 -- --------------------------------------------------------

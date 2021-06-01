@@ -62,7 +62,7 @@ List<Widget> getDrugs(List<Drug> drugs, Function showDialog) {
     print('get drugs');
     //print(drugs);
     drugs.forEach((drug) {
-      drugWidgets.add(drugTemplate(drug.drugName, drug.drugPrice, drug.drugDescription, showDialog));
+      drugWidgets.add(drugTemplate(drug.drugId,drug.drugName, drug.drugPrice, drug.drugDescription, showDialog));
       //print(drug.drugName);
     });
    // drugs.map((drug) => drugWidgets.add(drugTemplate(drug, showDialog)));

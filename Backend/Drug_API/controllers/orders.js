@@ -4,6 +4,18 @@ const getDatabase = require('../config/db').getDatabase;
 const Database = require('../config/DB');
 
 module.exports = {
+    getOrders: async(req, res, next) => {
+        const db = getDatabase(db_config);
+        try {
+            let orders = await db.query(order_model.getOrders);
+            //console.log(orders);
+            return res.status(200).json({orders: orders});
+        }
+        catch(err) {
+            db.close();
+            return next(err);
+        }
+    },
     getAllOrders: async(req, res, next) => {
         const db = getDatabase(db_config);
         try {

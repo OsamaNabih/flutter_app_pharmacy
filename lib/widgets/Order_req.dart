@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/widgets/card_info.dart';
+import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 
 class order_request extends StatefulWidget {
-  final String date;
-  final String price;
+  final int id;
   final String name;
+  final String datetime;
+  final int price;
   final String status;
+  String date;
+  String year;
+  String month;
+  String day;
   bool vis = true;
   bool vis1 = false;
   bool vis2 = false;
   Color color;
-  order_request({this.name, this.date, this.price, this.status}) {
+  order_request({this.id, this.name, this.datetime, this.price, this.status}) {
+    List<String> splitDateTime = datetime.split('T');
+    date = splitDateTime[0];
+    String time = splitDateTime[1];
+    List<String> splitDate = date.split('-');
+    year = splitDate[0];
+    month = splitDate[1];
+    day = splitDate[2];
     if (status == "Approved") {
       vis = false;
       vis1 = true;
       vis2 = false;
       color = Colors.green;
     } else {
-      if (status == "rej") {
+      if (status == "Rejected") {
         vis = false;
         vis2 = true;
         vis1 = false;
@@ -43,36 +57,53 @@ class _order_requestState extends State<order_request> {
       child: Column(
         //mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            height: 25,
-            child: ListTile(
-              leading: InkWell(
-                child: new Text(
-                  "${widget.name}",
-                  style: TextStyle(
-                      color: col, fontWeight: FontWeight.bold, fontSize: 25),
+            ListTile(
+              leading: Container(
+                width: 170,
+                child: InkWell(
+                  child: Text(
+                      '${widget.name}',
+                      //overflow: TextOverflow.fade,
+                      style: TextStyle(
+                          color: col, fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                  onHover: (value) {
+                    setState(() {
+                      col = Colors.red;
+                    });
+                  },
+                  onTap: () {
+                    Navigator.pushNamed(context, '/profile_page');
+                  },
                 ),
-                onHover: (value) {
-                  setState(() {
-                    col = Colors.red;
-                  });
-                },
-                onTap: () {
-                  Navigator.pushNamed(context, '/profile_page');
-                },
               ),
-              title: Text(
-                "Date : ${widget.date}",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
-              ),
-              subtitle: Text(
-                "Price :${widget.price}",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                title: Row(
+                  children: [
+                    Icon(
+                      Icons.calendar_today_rounded,
+                    ),
+                    Container(width: 6),
+                    Text(
+                      "${widget.date}",
+                      style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
+                  ],
+                ),
+              subtitle: Row(
+                children: [
+                  Icon(
+                    Icons.money_off_outlined,
+                  ),
+                  Container(width: 6),
+                  Text(
+                    "${widget.price}",
+                    style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
+                ],
               ),
             ),
-          ),
           Visibility(
             visible: widget.vis1,
             child: Container(),
@@ -83,15 +114,15 @@ class _order_requestState extends State<order_request> {
           ),
           Container(
             width: (MediaQuery.of(context).size.width / 20) * 100,
-            height: 120,
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
+            margin: const EdgeInsets.only(bottom: 12.0, left: 8, right: 8, top: 4),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Visibility(
                   child: Container(
-                    width: 120,
-                    height: 30,
+                    width: 100,
+                    height: 25,
                     child: FloatingActionButton(
                         heroTag: '',
                         backgroundColor: Colors.black,
@@ -116,8 +147,8 @@ class _order_requestState extends State<order_request> {
                 ),
                 Visibility(
                   child: Container(
-                    width: 120,
-                    height: 30,
+                    width: 100,
+                    height: 25,
                     child: FloatingActionButton(
                         heroTag: '',
                         backgroundColor: Colors.black,
@@ -131,32 +162,31 @@ class _order_requestState extends State<order_request> {
                               fontWeight: FontWeight.bold,
                               color: Colors.orange),
                         ),
-                        onPressed: () {
-                          //Navigator.pushNamed(context, '/order_details');
-                          //MaterialPageRoute(builder: (context) => orderTemplate()),
+                        onPressed: ()  {
                         }),
                   ),
                   visible: widget.vis,
                 ),
                 Container(
-                  width: 120,
-                  height: 30,
+                  width: 100,
+                  height: 25,
                   child: FloatingActionButton(
                       heroTag: '',
                       backgroundColor: Colors.black,
                       shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(10.0))),
-                      child: Text(
-                        "View Order Details",
-                        style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.orange),
+                      child: Icon(
+                        Icons.info_outline_rounded,
+                        color: Colors.orange,
                       ),
-                      onPressed: () {
-                        //Navigator.pushNamed(context, '/order_details');
-                        //MaterialPageRoute(builder: (context) => orderTemplate()),
+                      onPressed: () async {
+                        //here
+                        Item drug_list = await GetDrugsData(widget.id);
+                        Navigator.pushNamed(context, '/order_details', arguments: {
+                          'DrugObject': drug_list.drugs,
+                          'user_name': widget.name,
+                        });
                       }),
                 ),
               ],
@@ -168,7 +198,6 @@ class _order_requestState extends State<order_request> {
   }
 }
 
-Widget orderInfoTemplate(
-    String name, String date, String price, String status) {
-  return order_request(name: name, date: date, price: price, status: status);
+Widget orderInfoTemplate({@required int id, @required String name, @required String datetime, @required int price, @required String status}) {
+  return order_request(id: id, name: name, datetime: datetime, price: price, status: status);
 }

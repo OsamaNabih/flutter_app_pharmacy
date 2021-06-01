@@ -8,7 +8,7 @@ class All_Drugs{
   Map<String, dynamic> toJson() => {
     "drugs": List<dynamic>.from(drugs.map((x) => x.toJson())),
   };
-  int getlen(){
+  int getLen() {
     return drugs.length;
   }
 

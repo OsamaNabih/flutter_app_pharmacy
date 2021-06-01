@@ -1,5 +1,6 @@
 module.exports = {
     getOrder: 'SELECT order_id, drug_id, drug_name, drug_description, order_drug_quantity, drug_price, (drug_price*order_drug_quantity) as order_cost FROM Orders NATURAL JOIN `Order Drugs` JOIN Drugs ON order_drug_id = drug_id WHERE order_id = ?',
+    getOrders: 'SELECT * FROM `Users Orders`',
     getAllOrders: 'SELECT * FROM Orders NATURAL JOIN `Order Status`',
     getUserOrders: 'SELECT order_id, order_status_name, order_date, order_note, order_status_name FROM `Users Orders` WHERE user_id = ?',
     //getUserOrders: 'SELECT order_id, order_date, order_status, order_note, FROM Orders NATURAL JOIN `Order Status` WHERE user_id = ?',

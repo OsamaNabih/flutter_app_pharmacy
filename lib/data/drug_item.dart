@@ -1,7 +1,8 @@
-class item_drug{
-
-  String item_name;
-  int quantity=0;
-  item_drug(this.item_name, this.quantity);
+class drug_item{
+  int Drug_id=1;
+  int Price=5;
+  int Quantity=0;
+  String DrugName;
+  drug_item(this.Drug_id,this.Price,this.DrugName);
 
 }

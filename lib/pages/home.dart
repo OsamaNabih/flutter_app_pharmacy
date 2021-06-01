@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_pharmacy/pages/list.dart';
 import 'package:flutter_app_pharmacy/widgets/category.dart';
 import 'package:flutter_app_pharmacy/widgets/grid.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import 'package:flutter_app_pharmacy/data/list_order.dart';
-import 'package:flutter_app_pharmacy/widgets/drug.dart';
 import 'add_to-list_page.dart';
 import 'package:vertical_navigation_bar/vertical_navigation_bar.dart';
-import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:jwt_decode/jwt_decode.dart';
+import 'package:flutter_app_pharmacy/utils/user_preferences.dart';
+
 
 class Home extends StatefulWidget {
   @override
@@ -38,6 +37,8 @@ class _HomeState extends State<Home> {
   final initialTab = 0;
 
   void getlist_data() async{
+    String token = UserPreferences.getString('user_token');
+    print('Home SP token: $token');
     var response;
     print('getting list order data');
     var dataURI = Uri.http('10.0.2.2:3000', 'orders/user/$userId');
@@ -88,6 +89,9 @@ class _HomeState extends State<Home> {
   String _userName() {
     print(args.runtimeType);
     print(args['user_name'].runtimeType);
+    String token = UserPreferences.getString('user_token');
+    String token2 = UserPreferences.getString('token');
+    print('Home SP token: $token or $token2');
     return args == null ? 'Guest' : args['user_name'];
   }
 
@@ -95,7 +99,9 @@ class _HomeState extends State<Home> {
     //catSelected = 0;
     //print(args.toString());
     //print(args);
-    Map<String, dynamic> payload = Jwt.parseJwt(args['token']);
+
+
+    Map<String, dynamic> payload = Jwt.parseJwt(args['user_token']);
 
     userId = payload['user_id'];
     userName = _userName();
@@ -174,9 +180,6 @@ class _HomeState extends State<Home> {
                 scrollDirection: Axis.vertical,
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-
-
-
 
                   return Container(
                     child: ListView(
