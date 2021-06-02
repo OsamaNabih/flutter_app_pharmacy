@@ -27,6 +27,8 @@ class _Add_to_listState extends State<Add_to_list> {
   int Total_Cost=0;
   int _currentIntValue = 1;
   List<TextEditingController>controlers=[];
+  var args;
+  String Client_name;
 
   void getlist_data()async{
     var response;
@@ -67,6 +69,8 @@ class _Add_to_listState extends State<Add_to_list> {
 
   @override
   Widget build(BuildContext context) {
+    args = ModalRoute.of(context).settings.arguments;
+    this.Client_name=args["user_name"];
     return MaterialApp(
       title: "app",
       home: Scaffold(
@@ -79,20 +83,49 @@ class _Add_to_listState extends State<Add_to_list> {
           child: Consumer<cart>(
               builder: (context, cart, child) {
                 this.cart_len=cart.drugs.length;
-
+                this.controlers.clear();
                 for(int r=0 ; r<this.cart_len ; r++){
                   TextEditingController _controller = TextEditingController();
-                  _controller.text="1";
+                  _controller.text="${cart.drugs[r].Quantity}";
                   this.controlers.add(_controller);
                 }
 
-                return ListView(
+                return Column(
                   children: [
+                    Container(
+                      height:MediaQuery.of(context).size.height * 10/ 100 ,
+
+                            child: Row(children: <Widget>[
+                              Icon(
+                                Icons.account_box,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                              Text(
+                                this.Client_name,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ]),
+
+                    ),
+
+                       Container(
+                        height: MediaQuery.of(context).size.height * 55 / 100,
+                        child: ListView(
+                          children: [
+                            ...Drug_list(),
+                          ],
+                        ),
+                      ),
 
                     Container(
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height * 15 / 100,
                       alignment: Alignment.center,
+                      color: Colors.red,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -100,46 +133,43 @@ class _Add_to_listState extends State<Add_to_list> {
                             width: MediaQuery.of(context).size.width*0.40,
                             alignment: Alignment.centerLeft,
                             child: Text(
-                                "Total cost = ${Total_Cost} ",
-                              style: TextStyle(fontSize: 20 , color: Colors.red ),
+                              "Total cost = ${cart.Total_cost()} ",
+                              style: TextStyle(fontSize: 20 , color: Colors.white ),
 
                             ),
 
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width*0.40,
-                            alignment: Alignment.centerRight,
-                            child: Container(
+                              width: MediaQuery.of(context).size.width*0.40,
+                              alignment: Alignment.centerRight,
+                              child: Container(
 
-                              height: 30,
-                              color: Colors.red,
+                                height: 30,
+                                color: Colors.white,
                                 child: FloatingActionButton(
                                     heroTag: 'Buy',
-                                    backgroundColor: Colors.red,
+                                    backgroundColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                         BorderRadius.all(Radius.circular(0.0))),
                                     child: Text(
-                                      "Buy",
+                                      "Checkout",
                                       style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.white),
+                                          color: Colors.red),
                                     ),
                                     onPressed: () {
 
                                     }),
 
-                            )
+                              )
 
                           )
 
                         ],
                       ),
                     ),
-                    ...Drug_list(),
-
-
                   ],
                 );
               }
@@ -170,13 +200,14 @@ class _Add_to_listState extends State<Add_to_list> {
 
   List<Container> Drug_list(){
     List<Container> list=[];
-
+    print('Drug list cart len: ${this.cart_len}');
     for(int i = 0; i < this.cart_len; i++){
       list.add(drug(i,this.controlers[i]));
       list.add(Container(height: 15,));
     }
     return list;
   }
+
   Container drug(int index ,TextEditingController _controller) {
 
     return Container(
@@ -319,6 +350,7 @@ class _Add_to_listState extends State<Add_to_list> {
                                   _controller.text = (currentValue)
                                       .toString(); // incrementing value
                                 });
+                                cart.drugs[index].Quantity= cart.drugs[index].Quantity+1;
                               },
                             ),
                           ),
@@ -339,6 +371,10 @@ class _Add_to_listState extends State<Add_to_list> {
                                     (currentValue > 0 ? currentValue : 0)
                                         .toString(); // decrementing value
                               });
+                              cart.drugs[index].Quantity = cart.drugs[index].Quantity-1;
+                              if (cart.drugs[index].Quantity < 0){
+                                cart.drugs[index].Quantity = 0;
+                              }
                             },
                           ),
                         ],
@@ -348,21 +384,25 @@ class _Add_to_listState extends State<Add_to_list> {
                 ),
               ),
 
-
-
               Container(
                 //height: MediaQuery.of(context).size.height * 10 / 100,
                 width: MediaQuery.of(context).size.width * 10 / 100,
                 alignment: Alignment.centerRight,
-                child: Container(
-                  width: 60,
-                  height: 30,
+                child: InkWell(
+                  child: Container(
+                    width: 60,
+                    height: 30,
 
-                  child: Icon(
-                    Icons.delete_outline_outlined,
-                    color: Colors.red,
+                    child: Icon(
+                      Icons.delete_outline_outlined,
+                      color: Colors.red,
+                    ),
                   ),
+                  onTap: (){
+                    cart.remove_drug(cart.drugs[index]);
+                  },
                 ),
+
               ),
             ],
           );

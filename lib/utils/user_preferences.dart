@@ -10,4 +10,6 @@ class UserPreferences {
       await _preferences.setString(key, value);
 
   static String getString(String key) => _preferences.getString(key);
+
+  static void removeString(String key) => _preferences.remove(key);
 }

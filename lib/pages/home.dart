@@ -4,11 +4,11 @@ import 'package:flutter_app_pharmacy/widgets/grid.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import 'package:flutter_app_pharmacy/data/list_order.dart';
-import 'add_to-list_page.dart';
 import 'package:vertical_navigation_bar/vertical_navigation_bar.dart';
 import 'dart:convert';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:flutter_app_pharmacy/utils/user_preferences.dart';
+import 'package:flutter_app_pharmacy/services/home.dart';
 
 
 class Home extends StatefulWidget {
@@ -28,6 +28,7 @@ class _HomeState extends State<Home> {
   List<String> catNames;
   List<Drug> drugs = [];
   Widget app;
+  String _token;
   var init;
   String userName;
   final pageController = PageController(initialPage: 0, keepPage: true);
@@ -63,14 +64,16 @@ class _HomeState extends State<Home> {
       selected = index;
     });
     if (index == 2) {
-      //orders = getUserOrders();
       getlist_data();
 
     }
     if (index == 1) {
       // Cart page
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Add_to_list()));
+
+      Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
+        'user_name': this.userName,
+
+      });
     }
     if (index == 0) {
       // Home Page
@@ -87,19 +90,11 @@ class _HomeState extends State<Home> {
 
 
   String _userName() {
-    print(args.runtimeType);
-    print(args['user_name'].runtimeType);
-    String token = UserPreferences.getString('user_token');
-    String token2 = UserPreferences.getString('token');
-    print('Home SP token: $token or $token2');
+    _token = UserPreferences.getString('user_token');
     return args == null ? 'Guest' : args['user_name'];
   }
 
   void init_page() {
-    //catSelected = 0;
-    //print(args.toString());
-    //print(args);
-
 
     Map<String, dynamic> payload = Jwt.parseJwt(args['user_token']);
 
@@ -124,14 +119,6 @@ class _HomeState extends State<Home> {
     });
   }
 
-  /*
-  _HomeState() {
-    print('Inside constructor');
-    
-    print('Finished constructor');
-  }
-  */
-
   @override
   Widget build(BuildContext context) {
     print('build');
@@ -139,103 +126,110 @@ class _HomeState extends State<Home> {
     init_page();
     print("Nav items length: ${navItems.length}");
     // var widgets = this.init.then((value) {
-    return MaterialApp(
-      title: "app",
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Pharmacy App'),
-          backgroundColor: Colors.red,
-          centerTitle: true,
-        ),
-        body: Row(
-          children: <Widget>[
-            Container(
-                width: MediaQuery.of(context).size.width * 0.25,
-                height: MediaQuery.of(context).size.height * 0.8,
-                child: Theme(
-                  data: Theme.of(context).copyWith(
-                    canvasColor: Colors.red,
-                  ),
-                  child: SideNavigation(
-                    navItems: this.navItems,
-                    itemSelected: (index) {
-                      setState(() {
-                        print('index: $index');
-                        this.catSelected = index;
-                        updateDrugs();
-                      });
-
-                      pageController.animateToPage(index,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.linear);
-                    },
-                    initialIndex: 0,
-                    actions: <Widget>[],
-                  ),
-                )),
-            Expanded(
-              child: PageView.builder(
-                itemCount: this.navItems.length,
-                controller: pageController,
-                scrollDirection: Axis.vertical,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-
-                  return Container(
-                    child: ListView(
-                      children: <Widget>[
-                        Container(
-                          height: 60,
-                          child: Center(
-                              child: Row(children: <Widget>[
-                            Icon(
-                              Icons.account_box,
-                              color: Colors.red,
-                              size: 30,
-                            ),
-                            Text(
-                              userName,
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ])),
-                        ),
-                        ...gridTemplate(this.drugs, showDialog),
-                      ],
-                    ),
-                  );
-                },
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        //leadingWidth: 5,
+        title: Row(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.account_circle_rounded,
+                size: 30,
               ),
-            )
-          ],
+              onPressed: () {
+                navigateToProfile(context, _token);
+
+              },
+            ),
+            Text(
+              '${userName}',
+              style: TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ]
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
+        //title: Text('Pharmacy App'),
+        //centerTitle: true,
+        backgroundColor: Colors.red,
+        actions: [
+          TextButton(
+            child: Text("Logout"),
+            onPressed: () {
+              logout(context);
+            },
+          ),
+        ],
+      ),
+      body: Row(
+        children: <Widget>[
+          Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  canvasColor: Colors.red,
+                ),
+                child: SideNavigation(
+                  navItems: this.navItems,
+                  itemSelected: (index) {
+                    setState(() {
+                      print('index: $index');
+                      this.catSelected = index;
+                      updateDrugs();
+                    });
+
+                    pageController.animateToPage(index,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.linear);
+                  },
+                  initialIndex: 0,
+                  actions: <Widget>[],
+                ),
+              )),
+          Expanded(
+            child: PageView.builder(
+              itemCount: this.navItems.length,
+              controller: pageController,
+              scrollDirection: Axis.vertical,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+
+                return Container(
+                  child: ListView(
+                    children: <Widget>[
+                      ...gridTemplate(this.drugs, showDialog),
+                    ],
+                  ),
+                );
+              },
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart),
-              label: 'Selected drugs',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'History',
-            ),
-          ],
-          currentIndex: selected,
-          selectedItemColor: Colors.red,
-          onTap: _onItemTapped,
-        ),
+          )
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_shopping_cart),
+            label: 'Selected drugs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'History',
+          ),
+        ],
+        currentIndex: selected,
+        selectedItemColor: Colors.red,
+        onTap: _onItemTapped,
       ),
     );
-    //}
-    //);
-    //widgets.then((value) => this.app = value);
-    //return this.app;
+
   }
 
   void showDialog(String drug_desc) {

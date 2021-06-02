@@ -18,4 +18,14 @@ class cart extends ChangeNotifier{
   List<drug_item> get drug{
     return drugs;
   }
+  int Total_cost(){
+    int counter=0;
+
+    for(int u=0 ; u< drugs.length ; u++){
+      counter=counter+(drugs[u].Price*drugs[u].Quantity);
+    }
+    return counter;
+
+
+  }
 }

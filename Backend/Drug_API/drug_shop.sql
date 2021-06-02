@@ -430,32 +430,34 @@ CREATE TABLE `users` (
   `user_email` varchar(320) NOT NULL,
   `user_password` char(60) NOT NULL,
   `user_phone` varchar(20) NOT NULL,
-  `user_type_id` int(11) NOT NULL
+  `user_type_id` int(11) NOT NULL,
+  `user_address` text NOT NULL,
+  `user_image_path` text DEFAULT './images/default-avatar.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `user_name`, `user_email`, `user_password`, `user_phone`, `user_type_id`) VALUES
-(1, 'Arabella Shardlow', 'ashardlow0@surveymonkey.com', '1IWaq1MnpVHFZj', '6052070364', 1),
-(2, 'Aliza Rhodes', 'arhodes1@google.com.au', '0FvF2vYya6Uags', '2494024404', 2),
-(3, 'Flori Reinbach', 'freinbach2@independent.co.uk', 'Gg8wmThvkmdUpQ', '9947896992', 3),
-(4, 'Sven Stritton', 'sstritton3@spiegel.de', 'EYkNVJdxfdwQ63', '7273747950', 3),
-(5, 'Charmaine Idney', 'cidney4@state.gov', 'Xo2KxvCTNwmP8D', '8503693298', 1),
-(6, 'Edd Burkitt', 'eburkitt5@icq.com', 'ngacToRGtMcCq3', '4085689719', 2),
-(7, 'Winnie Von Oertzen', 'wvon6@indiatimes.com', 'Ope18ExyuutkWT', '1345498649', 2),
-(8, 'Euphemia Sprules', 'esprules7@ed.gov', '5YSk3u61nNaQ84', '9585563219', 3),
-(9, 'Lance Tookill', 'ltookill8@hugedomains.com', 'kBuyxBzjp2vLsh', '8709141921', 3),
-(10, 'Felike Mistry', 'fmistry9@123-reg.co.uk', 'zjFCIRQpRr8mgi', '7638345022', 2),
-(11, 'Phillie Mc Gaughey', 'pmca@xinhuanet.com', 'hWFSAP4u92u8xv', '4616477388', 1),
-(12, 'Alica Syres', 'asyresb@pinterest.com', 'XPyQgifH7KWmJB', '2363062472', 1),
-(13, 'Anallese Lofty', 'aloftyc@ow.ly', '6pQ8MvAaZmf9W5', '9257365080', 2),
-(14, 'Ginelle Gorman', 'ggormand@merriam-webster.com', '7DbM3uddZZRkKC', '4047826113', 3),
-(15, 'Heather Kulic', 'hkulice@craigslist.org', 'wIhZ4MvWxb3XmF', '6766609969', 3),
-(16, 'Osama Nabih', 'osos123@gmail.com', '$2b$10$ou82AeZCJLGEt8Rep6HrCe2eDyFFOyweRFtqpeb96msjlNx.Dclt2', '015382010', 1),
-(17, 'Moamen Tawfik', 'moamen123@gmail.com', '$2b$10$N21WvXqGyghCmve3lj617.0d2ElLBmMU4bmgF6CiZpufhI589Rgam', '010382010', 3),
-(18, 'Supercalifragilisticexpialidocious', 'longest_name@gmail.com', 'PVqeY6YFO029hD', '8015195583', 1);
+INSERT INTO `users` (`user_id`, `user_name`, `user_email`, `user_password`, `user_phone`, `user_type_id`, `user_address`) VALUES
+(1, 'Arabella Shardlow', 'ashardlow0@surveymonkey.com', '1IWaq1MnpVHFZj', '6052070364', 1, 'California'),
+(2, 'Aliza Rhodes', 'arhodes1@google.com.au', '0FvF2vYya6Uags', '2494024404', 2, 'L.A.'),
+(3, 'Flori Reinbach', 'freinbach2@independent.co.uk', 'Gg8wmThvkmdUpQ', '9947896992', 3, 'Washington'),
+(4, 'Sven Stritton', 'sstritton3@spiegel.de', 'EYkNVJdxfdwQ63', '7273747950', 3, 'Cairo'),
+(5, 'Charmaine Idney', 'cidney4@state.gov', 'Xo2KxvCTNwmP8D', '8503693298', 1, 'El Sharqia'),
+(6, 'Edd Burkitt', 'eburkitt5@icq.com', 'ngacToRGtMcCq3', '4085689719', 2, 'Paris'),
+(7, 'Winnie Von Oertzen', 'wvon6@indiatimes.com', 'Ope18ExyuutkWT', '1345498649', 2, 'Madrid'),
+(8, 'Euphemia Sprules', 'esprules7@ed.gov', '5YSk3u61nNaQ84', '9585563219', 3, 'Poznan'),
+(9, 'Lance Tookill', 'ltookill8@hugedomains.com', 'kBuyxBzjp2vLsh', '8709141921', 3, 'Warsaw'),
+(10, 'Felike Mistry', 'fmistry9@123-reg.co.uk', 'zjFCIRQpRr8mgi', '7638345022', 2, 'Milan'),
+(11, 'Phillie Mc Gaughey', 'pmca@xinhuanet.com', 'hWFSAP4u92u8xv', '4616477388', 1, 'Rome'),
+(12, 'Alica Syres', 'asyresb@pinterest.com', 'XPyQgifH7KWmJB', '2363062472', 1, 'Florence'),
+(13, 'Anallese Lofty', 'aloftyc@ow.ly', '6pQ8MvAaZmf9W5', '9257365080', 2, 'Vienna'),
+(14, 'Ginelle Gorman', 'ggormand@merriam-webster.com', '7DbM3uddZZRkKC', '4047826113', 3, 'Łódź'),
+(15, 'Heather Kulic', 'hkulice@craigslist.org', 'wIhZ4MvWxb3XmF', '6766609969', 3, 'Kraków'),
+(16, 'Osama Nabih', 'osos123@gmail.com', '$2b$10$ou82AeZCJLGEt8Rep6HrCe2eDyFFOyweRFtqpeb96msjlNx.Dclt2', '015382010', 1, '15 El Dokki St, El Mohandseen'),
+(17, 'Moamen Tawfik', 'moamen123@gmail.com', '$2b$10$N21WvXqGyghCmve3lj617.0d2ElLBmMU4bmgF6CiZpufhI589Rgam', '010382010', 3, '17 Random St, New Cairo'),
+(18, 'Supercalifragilisticexpialidocious', 'longest_name@gmail.com', 'PVqeY6YFO029hD', '8015195583', 1, 'In the ocean');
 
 
 

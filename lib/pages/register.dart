@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_pharmacy/data/user.dart';
+import 'dart:io';
+import 'package:async/async.dart';
+import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/pages/login.dart' as login;
-import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_app_pharmacy/services/login.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
+import 'package:flutter_app_pharmacy/profile/create_profile.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
+
 
 class Register extends StatefulWidget {
   @override
@@ -20,19 +25,41 @@ class _RegisterState extends State<Register> {
 
   final phoneController = TextEditingController();
 
-  User _user;
+  PickedFile _imageFile;
+  final _globalkey = GlobalKey<FormState>();
+  final ImagePicker _picker = ImagePicker();
 
-  void signUp() async {
-    var loginURI = Uri.http('10.0.2.2:3000', 'users/register');
-    final response = await http.post(loginURI, body: {
-      "user_email": emailController.text,
-      "user_password": passwordController.text,
-      "user_name": nameController.text,
-      "user_phone": phoneController.text
-    });
+  UserLoginResponse _user;
+
+  void register(BuildContext context) async {
+    var registerURI = Uri.http('10.0.2.2:3000', 'users/register');
+    File file = File(_imageFile.path);
+    var stream = new http.ByteStream(file.openRead());
+    //print(await stream.bytesToString());
+    print(await file.length);
+    int length = await file.length();
+
+    //var request = http.MultipartRequest("POST", Uri.parse("10.0.2.2:3000/users/register"));
+    var request = http.MultipartRequest("POST", registerURI);
+    //add text fields
+    request.fields["user_email"] = emailController.text;
+    request.fields["user_password"] = passwordController.text;
+    request.fields["user_name"] = nameController.text;
+    request.fields["user_phone"] = phoneController.text;
+    request.fields["user_address"] = "El dokki";
+    //File file = File(_imageFile.);
+    //create multipart using filepath, string or bytes
+    var multipartFile = await http.MultipartFile.fromPath("MyImage", file.path, contentType: MediaType('image','jpg'));
+    print(multipartFile.contentType);
+    //var multipartFile = new http.MultipartFile('MyImage', file.openRead(), length, filename: basename(file.path));
+
+    request.files.add(multipartFile);
+    var streamedResponse = await request.send();
+    print('Done');
+    var response = await http.Response.fromStream(streamedResponse);
     final String responseString = response.body;
     print(responseString);
-    User user = userFromJson(responseString);
+    UserLoginResponse user = userLoginResponseFromJson(responseString);
     print(user.toString());
 
     if (response.statusCode == 201) { // New resource created
@@ -41,6 +68,103 @@ class _RegisterState extends State<Register> {
       // Redirect to home page
       navigateToHome(context, user);
     }
+  }
+
+  Widget imageProfile(BuildContext context) {
+    return Center(
+      child: Stack(children: <Widget>[
+        CircleAvatar(
+          radius: 50.0,
+          backgroundImage: _imageFile == null
+              ? AssetImage("assets/profile.jpeg")
+              : FileImage(File(_imageFile.path)),
+          //backgroundImage: FileImage(File(_imageFile.path)),
+        ),
+        Positioned(
+          bottom: 20.0,
+          right: 20.0,
+          child: InkWell(
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                builder: ((builder) => bottomSheet(context)),
+              );
+            },
+            child: Icon(
+              Icons.camera_alt,
+              color: Colors.teal,
+              size: 28.0,
+            ),
+          ),
+        ),
+      ]),
+    );
+  }
+
+  Widget bottomSheet(BuildContext context) {
+    return Container(
+      height: 100.0,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(
+        children: <Widget>[
+          Text(
+            "Choose Profile photo",
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            TextButton.icon(
+              icon: Icon(
+                  Icons.camera,
+                  //color: Colors.grey[700],
+              ),
+              onPressed: () {
+                takePhoto(ImageSource.camera);
+              },
+              label: Text(
+                  "Camera",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+              ),
+            ),
+            TextButton.icon(
+              icon: Icon(
+                  Icons.image,
+                  //color: Colors.grey[700],
+              ),
+              onPressed: () {
+                takePhoto(ImageSource.gallery);
+              },
+              label: Text(
+                  "Gallery",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+              ),
+            ),
+          ])
+        ],
+      ),
+    );
+  }
+
+  void takePhoto(ImageSource source) async {
+    final pickedFile = await _picker.getImage(
+      source: source,
+    );
+    print(pickedFile.path);
+    setState(() {
+      _imageFile = pickedFile;
+    });
   }
 
   @override
@@ -58,19 +182,10 @@ class _RegisterState extends State<Register> {
       body: Container(
         color: Colors.white,
         child: ListView(children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 60,
-            child: Center(
-              child: Text(
-                "Register",
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red),
-              ),
-            ),
+          SizedBox(
+            height: 20,
           ),
+          imageProfile(context),
           Container(
             width: MediaQuery.of(context).size.width,
             height: 100,
@@ -187,7 +302,9 @@ class _RegisterState extends State<Register> {
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
-                  onPressed: signUp
+                  onPressed: () {
+                    register(context);
+                  }
               ),
             ),
           )
@@ -196,3 +313,4 @@ class _RegisterState extends State<Register> {
     );
   }
 }
+

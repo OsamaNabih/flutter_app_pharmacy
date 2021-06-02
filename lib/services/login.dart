@@ -6,7 +6,7 @@ import 'package:flutter_app_pharmacy/data/drug_data_admin.dart';
 import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'package:flutter_app_pharmacy/data/user.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
 
 
 Future<DrugsByCat> getDrugs() async {
@@ -32,13 +32,13 @@ List<String> getCatNames(DrugsByCat drugsByCat) {
   return catNames;
 }
 
-void storeUserPreferences(User user) async {
+void storeUserPreferences(UserLoginResponse user) async {
   UserPreferences.setString('user_name', user.userName);
   UserPreferences.setString('user_type', user.userType);
   UserPreferences.setString('user_token', user.token);
 }
 
-void navigateToHome(BuildContext context, User user) async {
+void navigateToHome(BuildContext context, UserLoginResponse user) async {
   if (user.userType == "Admin") { // Display inventory and orders tabs
     var dataURI = Uri.http('10.0.2.2:3000', 'drugs');
     var response = await http.get(dataURI);

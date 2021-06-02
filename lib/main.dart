@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/data/cart.dart';
+import 'package:flutter_app_pharmacy/data/orders.dart';
 import 'package:flutter_app_pharmacy/pages/add_to-list_page.dart';
 import 'package:flutter_app_pharmacy/pages/home.dart';
 import 'package:flutter_app_pharmacy/pages/login.dart';
-import 'package:flutter_app_pharmacy/pages/profile_page.dart';
+import 'package:flutter_app_pharmacy/pages/profile.dart';
 import 'package:flutter_app_pharmacy/pages/register.dart';
 import 'package:flutter_app_pharmacy/pages/list.dart';
 import 'package:flutter_app_pharmacy/pages/admin.dart';
@@ -16,9 +17,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await UserPreferences.init();
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (context) => cart())],
+    providers: [ChangeNotifierProvider(create: (context) => cart()),
+      ChangeNotifierProvider(create: (context) => orders())
+    ],
     child: MaterialApp(
-      initialRoute: '/loading',
+      initialRoute: '/register',
       routes: {
         '/loading': (context) => Loading(),
         '/home': (context) => Home(),
@@ -27,7 +30,7 @@ void main() async {
         '/list': (context) => List_order(),
         '/order_details': (context) => Order_D(),
         '/add_to_list_page': (context) => Add_to_list(),
-        '/profile_page': (context) => profile(),
+        '/profile': (context) => Profile(),
         '/inventory': (context) => Admin(),
       },
     ),

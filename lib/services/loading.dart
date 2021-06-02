@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:flutter_app_pharmacy/services/login.dart';
-import 'package:flutter_app_pharmacy/data/user.dart';
 import 'package:flutter_app_pharmacy/utils/user_preferences.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
 
 void getHomePage(BuildContext context) async {
 
@@ -16,7 +16,7 @@ void getHomePage(BuildContext context) async {
   if (token == null || Jwt.getExpiryDate(token).isBefore(DateTime.now())) // No previous sign in or Sign in session expired
     Navigator.pushReplacementNamed(context, '/login');
   else {
-    await navigateToHome(context, User.data(userName, userType, token));
+    await navigateToHome(context, UserLoginResponse.data(userName, userType, token));
   }
 }
 

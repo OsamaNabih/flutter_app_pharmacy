@@ -2,13 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
-import 'package:flutter_app_pharmacy/data/user.dart';
-import 'package:flutter_app_pharmacy/data/drug_data_admin.dart';
-import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'package:flutter_app_pharmacy/services/login.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -18,7 +14,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  User _user;
+  UserLoginResponse _user;
   DrugsByCat _drugsByCat;
   List<String> _catNames = [];
   List<Drug> drugs = [];
@@ -32,7 +28,7 @@ class _LoginState extends State<Login> {
     });
     final String responseString = response.body;
     //print(responseString);
-    User user = userFromJson(responseString);
+    UserLoginResponse user = userLoginResponseFromJson(responseString);
     if (response.statusCode == 200) { // Success
       // Redirect to home page
       navigateToHome(context, user);

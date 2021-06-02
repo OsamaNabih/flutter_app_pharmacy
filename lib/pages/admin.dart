@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
+import 'package:flutter_app_pharmacy/data/orders.dart';
 import 'package:flutter_app_pharmacy/pages/order_nav.dart';
 import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
 import 'package:flutter_app_pharmacy/data/drug_data_admin.dart';
@@ -42,11 +43,13 @@ class _AdminState extends State<Admin> {
   void order_state() {
     if (Accept.length > 0 || Reject.length > 0 || not_reply.length > 0)
       return;
+
      for(int p=0; p< order_list.orders.length ; p++){
        order_admin order = order_list.orders[p];
        Widget orderWidget = orderInfoTemplate(id: order.orderId, name: order.userName, datetime: order.orderDate, price: order.orderPrice, status: order.orderStatusName);
        if(order.orderStatusName=="Approved"){
          this.Accept.add(orderWidget);
+
        }
        if(order.orderStatusName=="Pending Approval"){
          this.not_reply.add(orderWidget);

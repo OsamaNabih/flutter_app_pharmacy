@@ -23,15 +23,22 @@ module.exports = {
                 err = 'A user already exists with this email';
                 return next(err);
             }
-            console.log(req.body);
             req.body.user_type_id = req.body.user_type_id != null ? req.body.user_type_id : 1;
-            console.log(req.body.user_type_id);
             req.body.user_password = password_hash;
+            if (req.files[0])
+            {
+                req.body['user_image_path'] = req.files[0].path;
+            }
+            else
+            {
+                req.body['user_image_path'] = "Images/default-avatar.png";
+            }
             let result = await db.query(user_model.insertUser, req.body);
             db.close();
             delete req.body['user_password'];
             let user_id = result['insertId']
             req.body.user_id = user_id;
+            
             const jsontoken = sign({ user_id: user_id}, process.env.jwt_secret, {
                 expiresIn: '72h'
             });
@@ -42,6 +49,7 @@ module.exports = {
                 token: jsontoken,
             });
         } catch(err) {
+            console.log(err);
             db.close();
             return next(err);
         }
@@ -90,7 +98,8 @@ module.exports = {
         try {            
             let user = await db.query(user_model.getUserById, req.params.id);
             db.close();
-            //console.log(result);
+            console.log(user);
+            user[0]['user_address'] = 'El dokki';
             return res.status(200).send(user[0]);
         }
         catch (err) {
