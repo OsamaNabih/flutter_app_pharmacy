@@ -32,10 +32,12 @@ class _ProfileState extends State<Profile> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Icon(
-                Icons.account_box,
-                color: Colors.red,
-                size: 70,
+              CircleAvatar(
+                backgroundImage: AssetImage('Backend/Drug_API/' + _user.userImagePath.replaceAll('\\', '/')),
+                radius: 60,
+              ),
+              SizedBox(
+                height: 10,
               ),
               Text(
                 '${_user.userName}',

@@ -432,7 +432,7 @@ CREATE TABLE `users` (
   `user_phone` varchar(20) NOT NULL,
   `user_type_id` int(11) NOT NULL,
   `user_address` text NOT NULL,
-  `user_image_path` text DEFAULT './images/default-avatar.png'
+  `user_image_path` text DEFAULT '/images/default-avatar.png'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

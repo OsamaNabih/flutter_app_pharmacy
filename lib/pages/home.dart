@@ -139,7 +139,6 @@ class _HomeState extends State<Home> {
               ),
               onPressed: () {
                 navigateToProfile(context, _token);
-
               },
             ),
             Text(
@@ -155,11 +154,18 @@ class _HomeState extends State<Home> {
         //centerTitle: true,
         backgroundColor: Colors.red,
         actions: [
-          TextButton(
-            child: Text("Logout"),
-            onPressed: () {
+          InkWell(
+            child: Row(
+              children: [
+                Icon(Icons.login_outlined),
+                SizedBox(width: 3),
+                Text("Logout"),
+                SizedBox(width: 12),
+              ],
+            ),
+            onTap: () {
               logout(context);
-            },
+            }
           ),
         ],
       ),

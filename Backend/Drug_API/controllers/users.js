@@ -31,7 +31,7 @@ module.exports = {
             }
             else
             {
-                req.body['user_image_path'] = "Images/default-avatar.png";
+                req.body['user_image_path'] = "images/default-avatar.png";
             }
             let result = await db.query(user_model.insertUser, req.body);
             db.close();

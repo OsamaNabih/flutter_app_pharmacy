@@ -62,7 +62,8 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
     // Store credentials in shared preference
     storeUserPreferences(user);
 
-    Navigator.pushReplacementNamed(context, '/inventory', arguments: {
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    Navigator.popAndPushNamed(context, '/inventory', arguments: {
       'user_name': user.userName,
       'user_type': user.userType,
       'inventory_list': drug_list,
@@ -76,7 +77,8 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
 
     // Store credentials in shared preference
     storeUserPreferences(user);
-    Navigator.pushReplacementNamed(context, '/home', arguments: {
+    Navigator.popUntil(context, ModalRoute.withName('/'));
+    Navigator.pushNamed(context, '/home', arguments: {
       'user_name': user.userName,
       'user_type': user.userType,
       'drugs_by_cat': drugsByCat.getCatDrugs(),

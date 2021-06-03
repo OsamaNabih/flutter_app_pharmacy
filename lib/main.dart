@@ -21,7 +21,7 @@ void main() async {
       ChangeNotifierProvider(create: (context) => orders())
     ],
     child: MaterialApp(
-      initialRoute: '/register',
+      initialRoute: '/loading',
       routes: {
         '/loading': (context) => Loading(),
         '/home': (context) => Home(),

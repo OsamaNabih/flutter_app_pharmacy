@@ -47,6 +47,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     // TODO: implement build
     //throw UnimplementedError();
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.red,
@@ -167,8 +168,7 @@ class _LoginState extends State<Login> {
                                     color: Colors.white),
                               ),
                               onPressed: () {
-                                Navigator.pushReplacementNamed(
-                                    context, '/register');
+                                Navigator.pushNamed(context, '/register');
                               }),
                         ),
                       )

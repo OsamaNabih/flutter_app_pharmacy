@@ -188,7 +188,7 @@ class _RegisterState extends State<Register> {
           imageProfile(context),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 100,
+            height: 80,
             child: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 70 / 100,
@@ -212,7 +212,7 @@ class _RegisterState extends State<Register> {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 100,
+            height: 80,
             child: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 70 / 100,
@@ -236,7 +236,7 @@ class _RegisterState extends State<Register> {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 100,
+            height: 80,
             child: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 70 / 100,
@@ -261,7 +261,7 @@ class _RegisterState extends State<Register> {
           ),
           Container(
             width: MediaQuery.of(context).size.width,
-            height: 100,
+            height: 80,
             child: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width * 70 / 100,
@@ -283,31 +283,49 @@ class _RegisterState extends State<Register> {
               ),
             ),
           ),
-          Container(
-            height: 100,
-            width: MediaQuery.of(context).size.width,
-            alignment: Alignment.center,
-            child: Container(
-              width: 100,
-              height: 50,
-              child: FloatingActionButton(
-                  heroTag: 'Register button',
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Text(
-                    "Register",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  onPressed: () {
-                    register(context);
-                  }
+              Container(
+                width: 150,
+                child: Column(
+                  children: [
+                    FloatingActionButton(
+                        heroTag: 'Register button',
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                        child: Text(
+                          "Register",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        onPressed: () {
+                          register(context);
+                        }
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    FloatingActionButton(
+                        heroTag: 'Sign in button',
+                        backgroundColor: Colors.red,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                        child: Text(
+                          "Sign in",
+                          style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/login');
+                        }
+                    ),
+                  ],
+
+                ),
               ),
-            ),
-          )
         ]),
       ),
     );

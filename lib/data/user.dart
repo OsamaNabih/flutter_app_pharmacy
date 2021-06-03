@@ -12,15 +12,17 @@ class User {
     this.userPassword = '',
     this.userPhone,
     this.userAddress,
+    this.userImagePath = "assets/images/default-avatar.png",
   });
 
-  User.data({@required String userName, @required String userType, @required String userEmail, String userPassword, @required String userPhone, @required String userAddress}) {
+  User.data({@required String userName, @required String userType, @required String userEmail, String userPassword, @required String userPhone, @required String userAddress, String userImagePath}) {
     this.userName = userName;
     this.userType = userType;
     this.userEmail = userEmail;
     this.userPassword = userPassword;
     this.userPhone = userPhone;
     this.userAddress = userAddress;
+    this.userImagePath = userImagePath;
   }
 
 
@@ -30,6 +32,7 @@ class User {
   String userPassword = '';
   String userPhone;
   String userAddress;
+  String userImagePath = "images/default-avatar.png";
 
   factory User.fromJson(Map<String, dynamic> json) => User(
     userName: json["user_name"],
@@ -38,6 +41,7 @@ class User {
     userPassword: json["user_password"] ?? '',
     userPhone: json["user_phone"],
     userAddress: json["user_address"],
+    userImagePath: json["user_image_path"] ?? "images/default-avatar.png",
   );
 
   Map<String, dynamic> toJson() => {
@@ -47,5 +51,6 @@ class User {
     "user_password": userPassword,
     "user_phone": userPhone,
     "userAddress": userAddress,
+    "userImagePath": userImagePath,
   };
 }
