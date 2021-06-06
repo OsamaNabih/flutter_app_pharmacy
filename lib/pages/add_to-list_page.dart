@@ -6,6 +6,8 @@ import 'package:flutter_app_pharmacy/pages/home.dart';
 import 'package:flutter_app_pharmacy/pages/loading.dart';
 import 'package:flutter_app_pharmacy/pages/login.dart';
 import 'package:flutter_app_pharmacy/pages/register.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
+import 'package:flutter_app_pharmacy/services/login.dart';
 import 'package:flutter_app_pharmacy/widgets/card_info.dart';
 import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
 import 'package:provider/provider.dart';
@@ -22,18 +24,19 @@ class Add_to_list extends StatefulWidget {
 }
 
 class _Add_to_listState extends State<Add_to_list> {
-  final int selected = 1;
+  int selected = 1;
   int cart_len = 0;
   int Total_Cost = 0;
   int _currentIntValue = 1;
   List<TextEditingController> controlers = [];
   var args;
   String Client_name;
+  UserLoginResponse _user;
 
   void getlist_data() async {
     var response;
     print('getting list order data');
-    var dataURI = Uri.http('10.0.2.2:3000', 'orders/user/9');
+    var dataURI = Uri.http('10.0.2.2:3000', 'orders/user/${_user.userId}');
     print("Sending get order request");
     response = await http.get(dataURI);
     print("res_order");
@@ -42,31 +45,62 @@ class _Add_to_listState extends State<Add_to_list> {
     }
     final String responseString = response.body;
     list_order list = list_order.fromJson(json.decode(responseString));
-    print("orders len ===${list.getlen()}");
-    print("${list.orders[0].user_name}");
+    print("orders len === ${list.getlen()}");
 
     Navigator.pushReplacementNamed(context, '/list', arguments: {
+      'user_name': _user.userName,
+      'user_type': _user.userType,
+      'user_token': _user.token,
+      'user_id': _user.userId,
       'order_object': list,
     });
   }
 
   void _onItemTapped(int index) {
+    if (index == selected) return;
+    setState(() {
+      selected = index;
+    });
     if (index == 2) {
       getlist_data();
     }
-    if (index == 1) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Add_to_list()));
+    else if (index == 1) {
+      Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
+        'user_name': _user.userName,
+        'user_type': _user.userType,
+        'user_token': _user.token,
+        'user_id': _user.userId,
+      });
     }
-    if (index == 0) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Home()));
+    else if (index == 0) {
+      navigateToHome(
+          context,
+          UserLoginResponse(
+            userName: args['user_name'],
+            userType: args['user_type'],
+            token: args['user_token'],
+            userId: args['user_id'],
+          )
+        );
+              
+      //Navigator.of(context)
+      //.push(MaterialPageRoute(builder: (context) => Home()));
     }
+  }
+
+  void init() {
+     this._user = UserLoginResponse(
+                    userName: args['user_name'],
+                    userType: args['user_type'],
+                    token: args['user_token'],
+                    userId: args['user_id'],
+                  );
   }
 
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
+    init();
     this.Client_name = args["user_name"];
     return MaterialApp(
       title: "app",

@@ -24,7 +24,8 @@ class _HomeState extends State<Home> {
   String userType;
 
   int catSelected = 0;
-  List<CategoryDrug> drugsByCat;
+  List<CategoryDrug> drugsByCatList;
+  DrugsByCat drugsByCat;
   int selected = 0;
   List<bool> isCatSelected = [];
   String c = "Category 1";
@@ -33,9 +34,7 @@ class _HomeState extends State<Home> {
   List<String> catNames;
   List<Drug> drugs = [];
   Widget app;
-  
-  var init;
-  
+    
   final pageController = PageController(initialPage: 0, keepPage: true);
 
   final List<SideNavigationItem> navItems = [];
@@ -56,10 +55,13 @@ class _HomeState extends State<Home> {
     }
     final String responseString = response.body;
     list_order list = list_order.fromJson(json.decode(responseString));
-    print("orders len == {list.getlen()}");
+    print("orders len == ${list.getlen()}");
 
     Navigator.pushReplacementNamed(context, '/list', arguments: {
       'user_name': this.userName,
+      'user_type': userType,
+      'user_token': _token,
+      'user_id': userId,
       'order_object': list,
     });
   }
@@ -77,17 +79,10 @@ class _HomeState extends State<Home> {
       // Cart page
       Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
         'user_name': this.userName,
+        'user_type': userType,
+        'user_token': _token,
+        'user_id': userId,
       });
-    }
-    else if (index == 0) {
-      // Home Page
-      navigateToHome(context, UserLoginResponse(
-        token: _token,
-        userName: this.userName,
-        userType: this.userType,
-      ));
-      //Navigator.of(context)
-          //.push(MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
@@ -102,19 +97,49 @@ class _HomeState extends State<Home> {
     return args == null ? 'Guest' : args['user_name'];
   }
 
-  void init_page() {
+  Future<DrugsByCat> getDrugs() async {
+    var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
+    var response = await http.get(dataURI);
+    if (response.statusCode != 200) {
+      throw ("Server error: ${response.body}");
+    }
+    final String responseString = response.body;
+    DrugsByCat drugsByCat = welcomeFromJson(responseString).drugsByCat;
+    return drugsByCat;
+  }
+
+  List<String> getCatNames(DrugsByCat drugsByCat) {
+    List<String> catNames = [];
+    if (drugsByCat == null) {
+      print('drugs are null');
+    }
+    drugsByCat.categoryDrugs.forEach((cat) {
+      print(cat.categoryName);
+      catNames.add(cat.categoryName);
+    });
+    return catNames;
+  }
+
+  void init_page() async {
     Map<String, dynamic> payload = Jwt.parseJwt(args['user_token']);
 
     this.userId = payload['user_id'];
     this.userName = _userName();
     this.userType = payload['user_type'];
     print('Name: $userName, id: $userId');
+
+    this.drugsByCat = await getDrugs();
+    this.catNames = getCatNames(this.drugsByCat);
+    this.drugsByCatList = this.drugsByCat.getCatDrugs();
+    this.drugs = drugsByCatList[catSelected].getDrugs();
+/*
     this.catNames =
         (args == null || args['cat_names'] == null) ? [] : args['cat_names'];
     this.drugsByCat = (args == null || args['drugs_by_cat'] == null)
         ? []
         : args['drugs_by_cat'];
     this.drugs = drugsByCat == null ? [] : drugsByCat[catSelected].getDrugs();
+    */
     if (this.navItems.length == 0) {
       catNames.forEach((catName) {
         //print(catName);
@@ -122,11 +147,21 @@ class _HomeState extends State<Home> {
         this.navItems.add(SideNavigationItem(title: catName));
       });
     }
+
   }
+
+  @override
+    void didChangeDependencies() {
+      print('Before');
+      super.didChangeDependencies();
+      print('After');
+      init_page();
+    }
+
 
   void updateDrugs() {
     setState(() {
-      this.drugs = drugsByCat == null ? [] : drugsByCat[catSelected].getDrugs();
+      this.drugs = drugsByCat == null ? [] : drugsByCatList[catSelected].getDrugs();
     });
   }
 

@@ -7,8 +7,8 @@ import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
-import 'package:flutter/scheduler.dart';
 
+/*
 Future<DrugsByCat> getDrugs() async {
   var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
   var response = await http.get(dataURI);
@@ -31,6 +31,7 @@ List<String> getCatNames(DrugsByCat drugsByCat) {
   });
   return catNames;
 }
+*/
 
 void storeUserPreferences(UserLoginResponse user) async {
   UserPreferences.setString('user_name', user.userName);
@@ -60,25 +61,25 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
     All_orders order_list = All_orders.fromJson(json.decode(responseString));
 
     print('Saving SP');
+
     // Store credentials in shared preference
     storeUserPreferences(user);
     Navigator.popUntil(context, ModalRoute.withName('/'));
-    //SchedulerBinding.instance.addPostFrameCallback((_) {
     Navigator.pushNamed(context, '/inventory', arguments: {
       'user_name': user.userName,
       'user_type': user.userType,
+      'user_token': user.token,
+      'user_id': user.userId,
       //'inventory_list': drug_list,
       //'order_list': order_list,
     });
-    //});
 
-    //Navigator.popUntil(context, ModalRoute.withName('/'));
 
   } else {
     // Display available drugs in homepage
 
-    DrugsByCat drugsByCat = await getDrugs();
-    List<String> catNames = getCatNames(drugsByCat);
+    //DrugsByCat drugsByCat = await getDrugs();
+    //List<String> catNames = getCatNames(drugsByCat);
 
     // Store credentials in shared preference
     storeUserPreferences(user);
@@ -86,9 +87,9 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
     Navigator.pushNamed(context, '/home', arguments: {
       'user_name': user.userName,
       'user_type': user.userType,
-      'drugs_by_cat': drugsByCat.getCatDrugs(),
-      'cat_names': catNames,
-      'user_token': user.token
+      //'drugs_by_cat': drugsByCat.getCatDrugs(),
+      //'cat_names': catNames,
+      'user_token': user.token,
     });
   }
 }

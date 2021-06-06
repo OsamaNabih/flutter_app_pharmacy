@@ -10,14 +10,17 @@ class UserLoginResponse {
     this.token,
     this.userName,
     this.userType,
+    this.userId,
   });
 
-  UserLoginResponse.data(String userName, String userType, String token) {
+  UserLoginResponse.data(int userId, String userName, String userType, String token) {
+    this.userId = userId;
     this.userName = userName;
     this.userType = userType;
     this.token = token;
   }
 
+  int userId;
   String message;
   String token;
   String userName;
@@ -28,6 +31,7 @@ class UserLoginResponse {
     token: json["token"],
     userName: json["user_name"],
     userType: json["user_type"],
+    userId: json["user_id"] ?? -1,
   );
 
   Map<String, dynamic> toJson() => {
@@ -35,5 +39,6 @@ class UserLoginResponse {
     "token": token,
     "user_name": userName,
     "user_type": userType,
+    "user_id": userId,
   };
 }

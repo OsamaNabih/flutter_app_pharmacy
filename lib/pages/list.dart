@@ -6,12 +6,15 @@ import 'package:flutter_app_pharmacy/pages/home.dart';
 import 'package:flutter_app_pharmacy/pages/loading.dart';
 import 'package:flutter_app_pharmacy/pages/login.dart';
 import 'package:flutter_app_pharmacy/pages/register.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
 import 'package:flutter_app_pharmacy/widgets/card_info.dart';
 import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
 import 'add_to-list_page.dart';
 import 'order_details.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_app_pharmacy/services/login.dart';
+
 
 class List_order extends StatefulWidget {
   @override
@@ -19,19 +22,41 @@ class List_order extends StatefulWidget {
 }
 
 class _List_orderState extends State<List_order> {
-  final int selected = 2;
+  int selected = 2;
   var args;
   list_order list;
+  UserLoginResponse _user;
+
+  void init() {
+     this._user = UserLoginResponse(
+                    userName: args['user_name'],
+                    userType: args['user_type'],
+                    token: args['user_token'],
+                    userId: args['user_id'],
+                  );
+  }
 
   void _onItemTapped(int index) {
-    if (index == 2) {}
+    if (index == selected) return;
+    setState(() {
+      selected = index;
+    });
     if (index == 1) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Add_to_list()));
+      Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
+        'user_name': _user.userName,
+        'user_type': _user.userType,
+        'user_token': _user.token,
+        'user_id': _user.userId,
+      });
     }
-    if (index == 0) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Home()));
+    else if (index == 0) {
+      navigateToHome(
+          context,
+          UserLoginResponse(
+              userName: _user.userName,
+              userType: _user.userType,
+              userId: _user.userId,
+              token: _user.token,));
     }
   }
 
@@ -39,6 +64,7 @@ class _List_orderState extends State<List_order> {
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
     list = args["order_object"];
+    init();
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +86,7 @@ class _List_orderState extends State<List_order> {
               size: 30,
             ),
             Text(
-              args["user_name"],
+              _user.userName,
               style: TextStyle(
                   fontSize: 20,
                   color: Theme.of(context).primaryColor,

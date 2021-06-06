@@ -108,7 +108,7 @@ Future<Item> GetDrugsData(int orderid) async {
   }
   final String responseString = response.body;
   Item list = Item.fromJson(json.decode(responseString));
-  print("${list.drugs[0].drugName} pppppppp");
+  print("${list.drugs[0].drugName}");
   return list;
 }
 

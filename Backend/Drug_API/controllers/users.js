@@ -46,6 +46,7 @@ module.exports = {
                 message: "Registered successfully",
                 user_name: req.body.user_name,
                 user_type: "1", 
+                user_id: result['user_id'],
                 token: jsontoken,
             });
         } catch(err) {
@@ -79,7 +80,8 @@ module.exports = {
                     message: 'Logged in successfully',
                     token: jsontoken,
                     user_name: exists[0].user_name,
-                    user_type: exists[0].user_type_name
+                    user_type: exists[0].user_type_name,
+                    user_id: exists[0].user_id,
                 });
             } 
             else {
