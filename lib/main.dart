@@ -17,7 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await UserPreferences.init();
   runApp(MultiProvider(
-    providers: [ChangeNotifierProvider(create: (context) => cart()),
+    providers: [ChangeNotifierProvider(create: (context) => Cart()),
       ChangeNotifierProvider(create: (context) => orders())
     ],
     child: MaterialApp(
@@ -33,6 +33,34 @@ void main() async {
         '/profile': (context) => Profile(),
         '/inventory': (context) => Admin(),
       },
+      theme: ThemeData(
+        primarySwatch: Colors.red,
+        //accentColor: Colors.yellowAccent,
+        // errorColor: Colors.red,
+        fontFamily: 'Quicksand',
+        textTheme: ThemeData.light().textTheme.copyWith(
+          /*
+          headline6: TextStyle(
+            fontFamily: 'OpenSans',
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+          */
+          button: TextStyle(color: Colors.white),
+        ),
+        appBarTheme: AppBarTheme(
+          textTheme: ThemeData.light().textTheme.copyWith(
+            
+            headline6: TextStyle(
+              //fontFamily: 'OpenSans',
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            button: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
     ),
   ));
 }

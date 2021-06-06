@@ -1,31 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_app_pharmacy/data/drug_item.dart';
 
-class cart extends ChangeNotifier{
-  List<drug_item>drugs=[];
-  double total_price=0;
+class Cart extends ChangeNotifier {
 
-  void add_drug(drug_item item){
+  List<DrugItem> drugs = [];
+  double totalPrice = 0;
+
+  void addDrug(DrugItem item) {
     this.drugs.add(item);
-    //total_price=total_price+(item.item_price*item.quantity);
     notifyListeners();
   }
-  void remove_drug(drug_item item){
+
+  void removeDrug(DrugItem item) {
     drugs.remove(item);
-    //total_price=total_price-(item.item_price*item.quantity);
     notifyListeners();
   }
-  List<drug_item> get drug{
+
+  List<DrugItem> get drug {
     return drugs;
   }
-  int Total_cost(){
-    int counter=0;
 
-    for(int u=0 ; u< drugs.length ; u++){
-      counter=counter+(drugs[u].Price*drugs[u].Quantity);
+  int totalCost() {
+    int counter = 0;
+    for (int i = 0; i < drugs.length; i++) {
+      counter = counter + (drugs[i].price * drugs[i].quantity);
     }
     return counter;
-
-
   }
 }

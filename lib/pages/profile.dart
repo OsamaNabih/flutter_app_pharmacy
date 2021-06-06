@@ -24,16 +24,17 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
-      //backgroundColor: Colors.red,
+      //backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               CircleAvatar(
-                backgroundImage: AssetImage('Backend/Drug_API/' + _user.userImagePath.replaceAll('\\', '/')),
+                backgroundImage: AssetImage('Backend/Drug_API/' +
+                    _user.userImagePath.replaceAll('\\', '/')),
                 radius: 60,
               ),
               SizedBox(
@@ -58,26 +59,24 @@ class _ProfileState extends State<Profile> {
               Card(
                   color: Colors.white,
                   margin:
-                  EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                   child: ListTile(
                     leading: Icon(
                       Icons.phone,
-                      color: Colors.red,
+                      color: Theme.of(context).primaryColor,
                     ),
                     title: Text(
                       '${_user.userPhone}',
-                      style:
-                      TextStyle(fontFamily: 'BalooBhai', fontSize: 20.0),
+                      style: TextStyle(fontFamily: 'BalooBhai', fontSize: 20.0),
                     ),
                   )),
               Card(
                 color: Colors.white,
-                margin:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: ListTile(
                   leading: Icon(
                     Icons.email,
-                    color: Colors.red,
+                    color: Theme.of(context).primaryColor,
                   ),
                   title: Text(
                     '${_user.userEmail}',
@@ -87,12 +86,11 @@ class _ProfileState extends State<Profile> {
               ),
               Card(
                 color: Colors.white,
-                margin:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: ListTile(
                   leading: Icon(
                     Icons.home,
-                    color: Colors.red,
+                    color: Theme.of(context).primaryColor,
                   ),
                   title: Text(
                     '${_user.userAddress}',

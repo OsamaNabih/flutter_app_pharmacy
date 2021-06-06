@@ -47,8 +47,8 @@ class _order_navState extends State<order_nav> with TickerProviderStateMixin {
       children: <Widget>[
         TabBar(
           controller: _nestedTabController,
-          indicatorColor: Colors.red,
-          labelColor: Colors.red,
+          indicatorColor: Theme.of(context).primaryColor,
+          labelColor: Theme.of(context).primaryColor,
           unselectedLabelColor: Colors.black54,
           isScrollable: true,
           tabs: <Widget>[

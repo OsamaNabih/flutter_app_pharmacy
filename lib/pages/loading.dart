@@ -14,9 +14,6 @@ class Loading extends StatelessWidget {
 Widget LoadingSpinner() {
   return Scaffold(
       body: Center(
-        child: CircularProgressIndicator(
-
-        ),
-      )
-  );
+    child: CircularProgressIndicator(),
+  ));
 }

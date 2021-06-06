@@ -7,7 +7,7 @@ import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
-
+import 'package:flutter/scheduler.dart';
 
 Future<DrugsByCat> getDrugs() async {
   var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
@@ -39,7 +39,8 @@ void storeUserPreferences(UserLoginResponse user) async {
 }
 
 void navigateToHome(BuildContext context, UserLoginResponse user) async {
-  if (user.userType == "Admin") { // Display inventory and orders tabs
+  if (user.userType == "Admin") {
+    // Display inventory and orders tabs
     var dataURI = Uri.http('10.0.2.2:3000', 'drugs');
     var response = await http.get(dataURI);
     if (response.statusCode != 200) {
@@ -61,16 +62,20 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
     print('Saving SP');
     // Store credentials in shared preference
     storeUserPreferences(user);
-
     Navigator.popUntil(context, ModalRoute.withName('/'));
-    Navigator.popAndPushNamed(context, '/inventory', arguments: {
+    //SchedulerBinding.instance.addPostFrameCallback((_) {
+    Navigator.pushNamed(context, '/inventory', arguments: {
       'user_name': user.userName,
       'user_type': user.userType,
-      'inventory_list': drug_list,
-      'order_list': order_list,
+      //'inventory_list': drug_list,
+      //'order_list': order_list,
     });
-  }
-  else { // Display available drugs in homepage
+    //});
+
+    //Navigator.popUntil(context, ModalRoute.withName('/'));
+
+  } else {
+    // Display available drugs in homepage
 
     DrugsByCat drugsByCat = await getDrugs();
     List<String> catNames = getCatNames(drugsByCat);

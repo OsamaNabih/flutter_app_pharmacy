@@ -54,18 +54,19 @@ class _GridState extends State<Grid> {
 
 List<Widget> gridTemplate(List<Drug> drugs, Function showDialog) {
   //return Grid(drugs, showDialog);
-  return getDrugs( drugs, showDialog);
+  return getDrugs(drugs, showDialog);
 }
 
 List<Widget> getDrugs(List<Drug> drugs, Function showDialog) {
-    List<Widget> drugWidgets = [];
-    print('get drugs');
-    //print(drugs);
-    drugs.forEach((drug) {
-      drugWidgets.add(drugTemplate(drug.drugId,drug.drugName, drug.drugPrice, drug.drugDescription, showDialog));
-      //print(drug.drugName);
-    });
-   // drugs.map((drug) => drugWidgets.add(drugTemplate(drug, showDialog)));
-    //print(drugWidgets);
-    return drugWidgets;
+  List<Widget> drugWidgets = [];
+  print('get drugs');
+  //print(drugs);
+  drugs.forEach((drug) {
+    drugWidgets.add(drugTemplate(drug.drugId, drug.drugName, drug.drugPrice,
+        drug.drugDescription, showDialog));
+    //print(drug.drugName);
+  });
+  // drugs.map((drug) => drugWidgets.add(drugTemplate(drug, showDialog)));
+  //print(drugWidgets);
+  return drugWidgets;
 }

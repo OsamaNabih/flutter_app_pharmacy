@@ -23,14 +23,14 @@ class Add_to_list extends StatefulWidget {
 
 class _Add_to_listState extends State<Add_to_list> {
   final int selected = 1;
-  int cart_len=0;
-  int Total_Cost=0;
+  int cart_len = 0;
+  int Total_Cost = 0;
   int _currentIntValue = 1;
-  List<TextEditingController>controlers=[];
+  List<TextEditingController> controlers = [];
   var args;
   String Client_name;
 
-  void getlist_data()async{
+  void getlist_data() async {
     var response;
     print('getting list order data');
     var dataURI = Uri.http('10.0.2.2:3000', 'orders/user/9');
@@ -41,17 +41,14 @@ class _Add_to_listState extends State<Add_to_list> {
       throw ("Server error: ${response.body}");
     }
     final String responseString = response.body;
-    list_order list= list_order.fromJson(json.decode(responseString));
+    list_order list = list_order.fromJson(json.decode(responseString));
     print("orders len ===${list.getlen()}");
     print("${list.orders[0].user_name}");
 
     Navigator.pushReplacementNamed(context, '/list', arguments: {
-      'order_object':list,
+      'order_object': list,
     });
-
   }
-
-
 
   void _onItemTapped(int index) {
     if (index == 2) {
@@ -70,111 +67,95 @@ class _Add_to_listState extends State<Add_to_list> {
   @override
   Widget build(BuildContext context) {
     args = ModalRoute.of(context).settings.arguments;
-    this.Client_name=args["user_name"];
+    this.Client_name = args["user_name"];
     return MaterialApp(
       title: "app",
       home: Scaffold(
         appBar: AppBar(
           title: Text('Your Order'),
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).primaryColor,
           centerTitle: true,
         ),
-        body: Container(
-          child: Consumer<cart>(
-              builder: (context, cart, child) {
-                this.cart_len=cart.drugs.length;
-                this.controlers.clear();
-                for(int r=0 ; r<this.cart_len ; r++){
-                  TextEditingController _controller = TextEditingController();
-                  _controller.text="${cart.drugs[r].Quantity}";
-                  this.controlers.add(_controller);
-                }
+        body: Container(child: Consumer<Cart>(builder: (context, cart, child) {
+          this.cart_len = cart.drugs.length;
+          this.controlers.clear();
+          for (int r = 0; r < this.cart_len; r++) {
+            TextEditingController _controller = TextEditingController();
+            _controller.text = "${cart.drugs[r].quantity}";
+            this.controlers.add(_controller);
+          }
 
-                return Column(
+          return Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height * 10 / 100,
+                child: Row(children: <Widget>[
+                  Icon(
+                    Icons.account_box,
+                    color: Theme.of(context).primaryColor,
+                    size: 30,
+                  ),
+                  Text(
+                    this.Client_name,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ]),
+              ),
+              Container(
+                height: MediaQuery.of(context).size.height * 55 / 100,
+                child: ListView(
+                  children: [
+                    ...Drug_list(),
+                  ],
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * 15 / 100,
+                alignment: Alignment.center,
+                color: Theme.of(context).primaryColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Container(
-                      height:MediaQuery.of(context).size.height * 10/ 100 ,
-
-                            child: Row(children: <Widget>[
-                              Icon(
-                                Icons.account_box,
-                                color: Colors.red,
-                                size: 30,
-                              ),
-                              Text(
-                                this.Client_name,
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ]),
-
-                    ),
-
-                       Container(
-                        height: MediaQuery.of(context).size.height * 55 / 100,
-                        child: ListView(
-                          children: [
-                            ...Drug_list(),
-                          ],
-                        ),
+                      width: MediaQuery.of(context).size.width * 0.40,
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Total cost = ${cart.totalCost()} ",
+                        style: TextStyle(fontSize: 20, color: Colors.white),
                       ),
-
+                    ),
                     Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height * 15 / 100,
-                      alignment: Alignment.center,
-                      color: Colors.red,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width*0.40,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              "Total cost = ${cart.Total_cost()} ",
-                              style: TextStyle(fontSize: 20 , color: Colors.white ),
-
-                            ),
-
-                          ),
-                          Container(
-                              width: MediaQuery.of(context).size.width*0.40,
-                              alignment: Alignment.centerRight,
-                              child: Container(
-
-                                height: 30,
-                                color: Colors.white,
-                                child: FloatingActionButton(
-                                    heroTag: 'Buy',
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.all(Radius.circular(0.0))),
-                                    child: Text(
-                                      "Checkout",
-                                      style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red),
-                                    ),
-                                    onPressed: () {
-
-                                    }),
-
-                              )
-
-                          )
-
-                        ],
-                      ),
-                    ),
+                        width: MediaQuery.of(context).size.width * 0.40,
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          height: 30,
+                          color: Colors.white,
+                          child: FloatingActionButton(
+                              heroTag: 'Buy',
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(0.0))),
+                              child: Text(
+                                "Checkout",
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).primaryColor),
+                              ),
+                              onPressed: () {}),
+                        ))
                   ],
-                );
-              }
-          )/**/
-        ),
+                ),
+              ),
+            ],
+          );
+        }) /**/
+            ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -191,61 +172,61 @@ class _Add_to_listState extends State<Add_to_list> {
             ),
           ],
           currentIndex: selected,
-          selectedItemColor: Colors.red,
+          selectedItemColor: Theme.of(context).primaryColor,
           onTap: _onItemTapped,
         ),
       ),
     );
   }
 
-  List<Container> Drug_list(){
-    List<Container> list=[];
+  List<Container> Drug_list() {
+    List<Container> list = [];
     print('Drug list cart len: ${this.cart_len}');
-    for(int i = 0; i < this.cart_len; i++){
-      list.add(drug(i,this.controlers[i]));
-      list.add(Container(height: 15,));
+    for (int i = 0; i < this.cart_len; i++) {
+      list.add(drug(i, this.controlers[i]));
+      list.add(Container(
+        height: 15,
+      ));
     }
     return list;
   }
 
-  Container drug(int index ,TextEditingController _controller) {
-
+  Container drug(int index, TextEditingController _controller) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      alignment: Alignment.center,
-      child: Consumer<cart>(
-        builder: (context, cart, child) {
-          //this.cart_len=cart.drugs.length;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 65 / 100,
-
-                child: Row(
-                 // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                     Container(
-                      width: MediaQuery.of(context).size.width * 16 / 100,
-                      height: MediaQuery.of(context).size.height * 9 / 100,
-                      //color: Colors.red,
-                      //alignment: Alignment.centerLeft,
-                       /*
+        width: MediaQuery.of(context).size.width,
+        alignment: Alignment.center,
+        child: Consumer<Cart>(
+          builder: (context, cart, child) {
+            //this.cart_len=cart.drugs.length;
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width * 65 / 100,
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width * 16 / 100,
+                          height: MediaQuery.of(context).size.height * 9 / 100,
+                          //color: Theme.of(context).primaryColor,
+                          //alignment: Alignment.centerLeft,
+                          /*
                       child: Container(
                         //height: 70,
                         width: 40,
-                        color: Colors.red,
+                        color: Theme.of(context).primaryColor,
                         alignment: Alignment.centerLeft,
                         */
-                        child: CircleAvatar(
-                          backgroundColor: Colors.red,
-                          child: Text(
-                            "Drug Image",
-                            style: TextStyle(fontSize: 10 , color: Colors.white),
-                          )
-                        )
-                            /*
+                          child: CircleAvatar(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Text(
+                                "Drug Image",
+                                style: TextStyle(
+                                    fontSize: 10, color: Colors.white),
+                              ))
+                          /*
                         Center(
                           child: Text(
                             "Drug Image",
@@ -254,160 +235,162 @@ class _Add_to_listState extends State<Add_to_list> {
                         ),
                         */
 
-                      ),
-
-
-                     Padding(
-                       //padding: const EdgeInsets.all(0.0),
-                       padding: const EdgeInsets.fromLTRB(8.0, 5, 0, 0),
-                       child: Container(
-
-                        child: Column(
-                          //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "Name: ",
-                                  style: TextStyle(fontSize: 15, color: Colors.red),
-                                ),
-                                Text(
-                                      "${cart.drugs[index].DrugName}",
-                                      style: TextStyle(fontSize: 15, color: Colors.black),
-                                    ),
-                              ],
-                            ),
-                            Row(
-                               children: [
-                                 Text(
-                                   "Unit Price: ",
-                                   style: TextStyle(fontSize: 15, color: Colors.red),
-                                 ),
-                                 Text(
-                                   "${cart.drugs[index].Price}",
-                                   style: TextStyle(fontSize: 15, color: Colors.black),
-                                 ),
-                               ],
-                             ),
-                          ],
-                        ),
-                      ),
-                     ),
-                  ],
-                ),
-              ),
-              Container(
-                width: 60,
-                //height: 40,
-                height: MediaQuery.of(context).size.height * 5 / 100,
-
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        //textAlignVertical: TextAlignVertical.center,
-                        decoration: InputDecoration(
-                          //contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.05),
-                          //contentPadding: EdgeInsets.all(2.0),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(7.0),
+                          ),
+                      Padding(
+                        //padding: const EdgeInsets.all(0.0),
+                        padding: const EdgeInsets.fromLTRB(8.0, 5, 0, 0),
+                        child: Container(
+                          child: Column(
+                            //mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    "Name: ",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  Text(
+                                    "${cart.drugs[index].drugName}",
+                                    style: TextStyle(
+                                        fontSize: 15, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    "Unit Price: ",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Theme.of(context).primaryColor),
+                                  ),
+                                  Text(
+                                    "${cart.drugs[index].price}",
+                                    style: TextStyle(
+                                        fontSize: 15, color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        controller: _controller,
-                        keyboardType: TextInputType.numberWithOptions(
-                          decimal: false,
-                          signed: true,
-                        ),
-
                       ),
-                    ),
-                    Container(
-                      //height: 60.0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 0.5,
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 60,
+                  //height: 40,
+                  height: MediaQuery.of(context).size.height * 5 / 100,
+
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: TextFormField(
+                          textAlign: TextAlign.center,
+                          //textAlignVertical: TextAlignVertical.center,
+                          decoration: InputDecoration(
+                            //contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.05),
+                            //contentPadding: EdgeInsets.all(2.0),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(7.0),
+                            ),
+                          ),
+                          controller: _controller,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: false,
+                            signed: true,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        //height: 60.0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 0.5,
+                                  ),
                                 ),
                               ),
+                              child: InkWell(
+                                child: Icon(
+                                  Icons.arrow_drop_up,
+                                  size: 15.0,
+                                ),
+                                onTap: () {
+                                  int currentValue =
+                                      int.parse(_controller.text);
+                                  setState(() {
+                                    currentValue++;
+                                    _controller.text = (currentValue)
+                                        .toString(); // incrementing value
+                                  });
+                                  cart.drugs[index].quantity =
+                                      cart.drugs[index].quantity + 1;
+                                },
+                              ),
                             ),
-                            child: InkWell(
+                            Container(
+                              height: 0.0,
+                            ),
+                            InkWell(
                               child: Icon(
-                                Icons.arrow_drop_up,
+                                Icons.arrow_drop_down,
                                 size: 15.0,
                               ),
                               onTap: () {
                                 int currentValue = int.parse(_controller.text);
                                 setState(() {
-                                  currentValue++;
-                                  _controller.text = (currentValue)
-                                      .toString(); // incrementing value
+                                  print("Setting state");
+                                  currentValue--;
+                                  _controller.text =
+                                      (currentValue > 0 ? currentValue : 0)
+                                          .toString(); // decrementing value
                                 });
-                                cart.drugs[index].Quantity= cart.drugs[index].Quantity+1;
+                                cart.drugs[index].quantity =
+                                    cart.drugs[index].quantity - 1;
+                                if (cart.drugs[index].quantity < 0) {
+                                  cart.drugs[index].quantity = 0;
+                                }
                               },
                             ),
-                          ),
-                          Container(
-                            height: 0.0,
-                          ),
-                          InkWell(
-                            child: Icon(
-                              Icons.arrow_drop_down,
-                              size: 15.0,
-                            ),
-                            onTap: () {
-                              int currentValue = int.parse(_controller.text);
-                              setState(() {
-                                print("Setting state");
-                                currentValue--;
-                                _controller.text =
-                                    (currentValue > 0 ? currentValue : 0)
-                                        .toString(); // decrementing value
-                              });
-                              cart.drugs[index].Quantity = cart.drugs[index].Quantity-1;
-                              if (cart.drugs[index].Quantity < 0){
-                                cart.drugs[index].Quantity = 0;
-                              }
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  //height: MediaQuery.of(context).size.height * 10 / 100,
+                  width: MediaQuery.of(context).size.width * 10 / 100,
+                  alignment: Alignment.centerRight,
+                  child: InkWell(
+                    child: Container(
+                      width: 60,
+                      height: 30,
+                      child: Icon(
+                        Icons.delete_outline_outlined,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              Container(
-                //height: MediaQuery.of(context).size.height * 10 / 100,
-                width: MediaQuery.of(context).size.width * 10 / 100,
-                alignment: Alignment.centerRight,
-                child: InkWell(
-                  child: Container(
-                    width: 60,
-                    height: 30,
-
-                    child: Icon(
-                      Icons.delete_outline_outlined,
-                      color: Colors.red,
-                    ),
+                    onTap: () {
+                      cart.removeDrug(cart.drugs[index]);
+                    },
                   ),
-                  onTap: (){
-                    cart.remove_drug(cart.drugs[index]);
-                  },
                 ),
-
-              ),
-            ],
-          );
-        },
-      )/**/
-    );
+              ],
+            );
+          },
+        ) /**/
+        );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
+import 'package:flutter_app_pharmacy/services/login.dart';
 import 'package:flutter_app_pharmacy/widgets/category.dart';
 import 'package:flutter_app_pharmacy/widgets/grid.dart';
 import 'package:http/http.dart' as http;
@@ -10,7 +12,6 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:flutter_app_pharmacy/utils/user_preferences.dart';
 import 'package:flutter_app_pharmacy/services/home.dart';
 
-
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
@@ -18,6 +19,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int userId;
+  String _token;
+  String userName;
+  String userType;
+
   int catSelected = 0;
   List<CategoryDrug> drugsByCat;
   int selected = 0;
@@ -28,16 +33,16 @@ class _HomeState extends State<Home> {
   List<String> catNames;
   List<Drug> drugs = [];
   Widget app;
-  String _token;
+  
   var init;
-  String userName;
+  
   final pageController = PageController(initialPage: 0, keepPage: true);
 
   final List<SideNavigationItem> navItems = [];
 
   final initialTab = 0;
 
-  void getlist_data() async{
+  void getlist_data() async {
     String token = UserPreferences.getString('user_token');
     print('Home SP token: $token');
     var response;
@@ -50,35 +55,39 @@ class _HomeState extends State<Home> {
       throw ("Server error: ${response.body}");
     }
     final String responseString = response.body;
-    list_order list= list_order.fromJson(json.decode(responseString));
+    list_order list = list_order.fromJson(json.decode(responseString));
     print("orders len == {list.getlen()}");
 
     Navigator.pushReplacementNamed(context, '/list', arguments: {
       'user_name': this.userName,
-      'order_object':list,
+      'order_object': list,
     });
-
   }
+
   void _onItemTapped(int index) {
+    if (index == selected)
+      return;
     setState(() {
       selected = index;
     });
     if (index == 2) {
       getlist_data();
-
     }
-    if (index == 1) {
+    else if (index == 1) {
       // Cart page
-
       Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
         'user_name': this.userName,
-
       });
     }
-    if (index == 0) {
+    else if (index == 0) {
       // Home Page
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => Home()));
+      navigateToHome(context, UserLoginResponse(
+        token: _token,
+        userName: this.userName,
+        userType: this.userType,
+      ));
+      //Navigator.of(context)
+          //.push(MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
@@ -88,21 +97,23 @@ class _HomeState extends State<Home> {
     });
   }
 
-
   String _userName() {
     _token = UserPreferences.getString('user_token');
     return args == null ? 'Guest' : args['user_name'];
   }
 
   void init_page() {
-
     Map<String, dynamic> payload = Jwt.parseJwt(args['user_token']);
 
-    userId = payload['user_id'];
-    userName = _userName();
+    this.userId = payload['user_id'];
+    this.userName = _userName();
+    this.userType = payload['user_type'];
     print('Name: $userName, id: $userId');
-    this.catNames =  (args == null || args['cat_names'] == null) ? [] : args['cat_names'];
-    this.drugsByCat = (args == null || args['drugs_by_cat'] == null) ? [] : args['drugs_by_cat'];
+    this.catNames =
+        (args == null || args['cat_names'] == null) ? [] : args['cat_names'];
+    this.drugsByCat = (args == null || args['drugs_by_cat'] == null)
+        ? []
+        : args['drugs_by_cat'];
     this.drugs = drugsByCat == null ? [] : drugsByCat[catSelected].getDrugs();
     if (this.navItems.length == 0) {
       catNames.forEach((catName) {
@@ -130,43 +141,40 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         centerTitle: false,
         //leadingWidth: 5,
-        title: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.account_circle_rounded,
-                size: 30,
-              ),
-              onPressed: () {
-                navigateToProfile(context, _token);
-              },
+        title: Row(children: [
+          IconButton(
+            icon: Icon(
+              Icons.account_circle_rounded,
+              size: 30,
             ),
-            Text(
-              '${userName}',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
+            onPressed: () {
+              navigateToProfile(context, _token);
+            },
+          ),
+          Text(
+            '${this.userName}',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
             ),
-          ]
-        ),
+          ),
+        ]),
         //title: Text('Pharmacy App'),
         //centerTitle: true,
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).primaryColor,
         actions: [
           InkWell(
-            child: Row(
-              children: [
-                Icon(Icons.login_outlined),
-                SizedBox(width: 3),
-                Text("Logout"),
-                SizedBox(width: 12),
-              ],
-            ),
-            onTap: () {
-              logout(context);
-            }
-          ),
+              child: Row(
+                children: [
+                  Icon(Icons.login_outlined),
+                  SizedBox(width: 3),
+                  Text("Logout"),
+                  SizedBox(width: 12),
+                ],
+              ),
+              onTap: () {
+                logout(context);
+              }),
         ],
       ),
       body: Row(
@@ -202,7 +210,6 @@ class _HomeState extends State<Home> {
               scrollDirection: Axis.vertical,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-
                 return Container(
                   child: ListView(
                     children: <Widget>[
@@ -231,11 +238,10 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: selected,
-        selectedItemColor: Colors.red,
+        selectedItemColor: Theme.of(context).primaryColor,
         onTap: _onItemTapped,
       ),
     );
-
   }
 
   void showDialog(String drug_desc) {
@@ -260,7 +266,7 @@ class _HomeState extends State<Home> {
                       "The Drug Description",
                       style: TextStyle(
                         fontSize: 25,
-                        color: Colors.red,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ),
@@ -281,7 +287,7 @@ class _HomeState extends State<Home> {
                         drug_desc,
                         style: TextStyle(
                           fontSize: 20,
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),

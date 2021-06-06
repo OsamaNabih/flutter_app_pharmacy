@@ -19,7 +19,6 @@ class _LoginState extends State<Login> {
   List<String> _catNames = [];
   List<Drug> drugs = [];
 
-
   void signIn() async {
     var loginURI = Uri.http('10.0.2.2:3000', 'users/login');
     var response = await http.post(loginURI, body: {
@@ -29,12 +28,12 @@ class _LoginState extends State<Login> {
     final String responseString = response.body;
     //print(responseString);
     UserLoginResponse user = userLoginResponseFromJson(responseString);
-    if (response.statusCode == 200) { // Success
+    if (response.statusCode == 200) {
+      // Success
       // Redirect to home page
       navigateToHome(context, user);
     }
   }
-
 
   @override
   void dispose() {
@@ -50,7 +49,7 @@ class _LoginState extends State<Login> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.red,
+          backgroundColor: Theme.of(context).primaryColor,
           title: Text(
             "Pharmacy App",
             style: TextStyle(
@@ -71,7 +70,7 @@ class _LoginState extends State<Login> {
                       style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                          color: Theme.of(context).primaryColor),
                     ),
                   ),
                 ),
@@ -87,13 +86,13 @@ class _LoginState extends State<Login> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
-                                color: Colors.red,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             labelStyle: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.red),
+                                color: Theme.of(context).primaryColor),
                             labelText: "Enter your email"),
                       ),
                     ),
@@ -112,13 +111,13 @@ class _LoginState extends State<Login> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0),
                               borderSide: BorderSide(
-                                color: Colors.red,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             labelStyle: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.red),
+                                color: Theme.of(context).primaryColor),
                             labelText: "Enter your Password"),
                       ),
                     ),
@@ -134,7 +133,7 @@ class _LoginState extends State<Login> {
                         height: 40,
                         child: FloatingActionButton(
                             heroTag: 'Login button',
-                            backgroundColor: Colors.red,
+                            backgroundColor: Theme.of(context).primaryColor,
                             shape: RoundedRectangleBorder(
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(15.0))),
@@ -156,7 +155,7 @@ class _LoginState extends State<Login> {
                           height: 40,
                           child: FloatingActionButton(
                               heroTag: 'Register button',
-                              backgroundColor: Colors.red,
+                              backgroundColor: Theme.of(context).primaryColor,
                               shape: RoundedRectangleBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(15.0))),
@@ -179,4 +178,3 @@ class _LoginState extends State<Login> {
             )));
   }
 }
-

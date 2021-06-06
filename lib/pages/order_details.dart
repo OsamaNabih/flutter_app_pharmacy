@@ -11,11 +11,11 @@ class Order_D extends StatefulWidget {
 
 class _Order_DState extends State<Order_D> {
   int selected = 2;
-  int total_price=0;
+  int total_price = 0;
   var args;
   Item list_of_drug;
   String user_name;
-  List<Drug> drugs=[];
+  List<Drug> drugs = [];
   void _onItemTapped(int index) {
     setState(() {
       selected = index;
@@ -25,25 +25,27 @@ class _Order_DState extends State<Order_D> {
   List<DrugDataRow.DataRow> getDrugDataRows() {
     print('Quantity: ${drugs[0].drugQuantity}');
     return List<DrugDataRow.DataRow>.from(drugs.map((drug) {
-      this.total_price=this.total_price+(drug.drugPrice*drug.drugQuantity);
-      return dataRowTemplate(item: drug.drugName, quantity: drug.drugQuantity, price: drug.drugPrice);
+      this.total_price =
+          this.total_price + (drug.drugPrice * drug.drugQuantity);
+      return dataRowTemplate(
+          item: drug.drugName,
+          quantity: drug.drugQuantity,
+          price: drug.drugPrice);
     }));
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     args = ModalRoute.of(context).settings.arguments;
 
-    drugs=args['DrugObject'];
+    drugs = args['DrugObject'];
     user_name = args['user_name'];
 
     print(drugs[0].drugName);
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           "Pharmacy App",
           style: TextStyle(
@@ -57,14 +59,14 @@ class _Order_DState extends State<Order_D> {
             Row(children: <Widget>[
               Icon(
                 Icons.account_box,
-                color: Colors.red,
+                color: Theme.of(context).primaryColor,
                 size: 30,
               ),
               Text(
                 user_name,
                 style: TextStyle(
                     fontSize: 20,
-                    color: Colors.red,
+                    color: Theme.of(context).primaryColor,
                     fontWeight: FontWeight.bold),
               ),
             ]),
@@ -76,7 +78,7 @@ class _Order_DState extends State<Order_D> {
                   "Order_Details",
                   style: TextStyle(
                       fontSize: 20,
-                      color: Colors.red,
+                      color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.bold),
                 ),
               ),
@@ -91,9 +93,7 @@ class _Order_DState extends State<Order_D> {
               ),
               child: ListView(
                 children: <Widget>[
-
                   ...getDrugDataRows(),
-
                 ],
               ),
             ),
@@ -103,10 +103,9 @@ class _Order_DState extends State<Order_D> {
                 child: Text(
                   " Total Cost ",
                   style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.red,
-                      fontWeight: FontWeight.bold
-                  ),
+                      fontSize: 20,
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -116,17 +115,15 @@ class _Order_DState extends State<Order_D> {
                 child: Text(
                   "${this.total_price}",
                   style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.black,
-                       fontWeight: FontWeight.bold
-                  ),
+                      fontSize: 15,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
           ],
         ),
       ),
-
     );
   }
 }
@@ -134,4 +131,3 @@ class _Order_DState extends State<Order_D> {
 Widget orderTemplate() {
   return Order_D();
 }
-

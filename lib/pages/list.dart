@@ -10,7 +10,9 @@ import 'package:flutter_app_pharmacy/widgets/card_info.dart';
 import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
 import 'add_to-list_page.dart';
 import 'order_details.dart';
-import 'dart:convert'; import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 class List_order extends StatefulWidget {
   @override
   _List_orderState createState() => _List_orderState();
@@ -21,14 +23,8 @@ class _List_orderState extends State<List_order> {
   var args;
   list_order list;
 
-
-
-
-
   void _onItemTapped(int index) {
-    if (index == 2) {
-
-    }
+    if (index == 2) {}
     if (index == 1) {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (context) => Add_to_list()));
@@ -41,13 +37,12 @@ class _List_orderState extends State<List_order> {
 
   @override
   Widget build(BuildContext context) {
-
     args = ModalRoute.of(context).settings.arguments;
-    list=args["order_object"];
+    list = args["order_object"];
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           "Pharmacy App",
           style: TextStyle(
@@ -61,24 +56,17 @@ class _List_orderState extends State<List_order> {
               child: Row(children: <Widget>[
             Icon(
               Icons.account_box,
-              color: Colors.red,
+              color: Theme.of(context).primaryColor,
               size: 30,
             ),
             Text(
               args["user_name"],
               style: TextStyle(
-                  fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
+                  fontSize: 20,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold),
             ),
           ])),
-
-          //Hardcoded data
-         /* cardInfoTemplate("22/4/2020", "99", "Approved"),
-          cardInfoTemplate("23/4/2020", "77", "Approved"),
-          cardInfoTemplate("27/4/2020", "554", "Delivered"),
-          cardInfoTemplate("26/9/2020", "54", "Rejected"),
-          cardInfoTemplate("26//2020", "56", "Shipping"),
-          cardInfoTemplate("2/5/2020", "45", "Pending Approval"),
-*/
           ...item(list.orders),
         ],
       ),
@@ -98,18 +86,18 @@ class _List_orderState extends State<List_order> {
           ),
         ],
         currentIndex: selected,
-        selectedItemColor: Colors.red,
+        selectedItemColor: Theme.of(context).primaryColor,
         onTap: _onItemTapped,
       ),
     );
   }
 
-  List<Widget> item(List<order> ord) {
-    List<Widget> cards=[];
+  List<Widget> item(List<order> order) {
+    List<Widget> cards = [];
 
- for (int y = 0; y < ord.length; y++) {
-      cards.add(cardInfoTemplate(ord[y].order_date, "${ord[y].Total_Cost}", ord[y].order_status_name,ord[y].order_id));
-
+    for (int y = 0; y < order.length; y++) {
+      cards.add(cardInfoTemplate(order[y].order_date, "${order[y].Total_Cost}",
+          order[y].order_status_name, order[y].order_id));
     }
     return cards;
   }

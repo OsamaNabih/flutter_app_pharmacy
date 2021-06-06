@@ -6,10 +6,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/pages/login.dart' as login;
 import 'package:flutter_app_pharmacy/services/login.dart';
 import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
-import 'package:flutter_app_pharmacy/profile/create_profile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
-
 
 class Register extends StatefulWidget {
   @override
@@ -49,7 +47,8 @@ class _RegisterState extends State<Register> {
     request.fields["user_address"] = "El dokki";
     //File file = File(_imageFile.);
     //create multipart using filepath, string or bytes
-    var multipartFile = await http.MultipartFile.fromPath("MyImage", file.path, contentType: MediaType('image','jpg'));
+    var multipartFile = await http.MultipartFile.fromPath("MyImage", file.path,
+        contentType: MediaType('image', 'jpg'));
     print(multipartFile.contentType);
     //var multipartFile = new http.MultipartFile('MyImage', file.openRead(), length, filename: basename(file.path));
 
@@ -62,7 +61,8 @@ class _RegisterState extends State<Register> {
     UserLoginResponse user = userLoginResponseFromJson(responseString);
     print(user.toString());
 
-    if (response.statusCode == 201) { // New resource created
+    if (response.statusCode == 201) {
+      // New resource created
       // Store credentials in shared preference
       storeUserPreferences(user);
       // Redirect to home page
@@ -123,32 +123,32 @@ class _RegisterState extends State<Register> {
           Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
             TextButton.icon(
               icon: Icon(
-                  Icons.camera,
-                  //color: Colors.grey[700],
+                Icons.camera,
+                //color: Colors.grey[700],
               ),
               onPressed: () {
                 takePhoto(ImageSource.camera);
               },
               label: Text(
-                  "Camera",
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
+                "Camera",
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
             TextButton.icon(
               icon: Icon(
-                  Icons.image,
-                  //color: Colors.grey[700],
+                Icons.image,
+                //color: Colors.grey[700],
               ),
               onPressed: () {
                 takePhoto(ImageSource.gallery);
               },
               label: Text(
-                  "Gallery",
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
+                "Gallery",
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                ),
               ),
             ),
           ])
@@ -171,7 +171,7 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).primaryColor,
         title: Text(
           "Pharmacy App",
           style: TextStyle(
@@ -198,13 +198,13 @@ class _RegisterState extends State<Register> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       labelStyle: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                          color: Theme.of(context).primaryColor),
                       labelText: "Enter your Name"),
                 ),
               ),
@@ -222,13 +222,13 @@ class _RegisterState extends State<Register> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       labelStyle: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                          color: Theme.of(context).primaryColor),
                       labelText: "Enter your Email"),
                 ),
               ),
@@ -247,13 +247,13 @@ class _RegisterState extends State<Register> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       labelStyle: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                          color: Theme.of(context).primaryColor),
                       labelText: "Enter your Password"),
                 ),
               ),
@@ -271,64 +271,60 @@ class _RegisterState extends State<Register> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0),
                         borderSide: BorderSide(
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       labelStyle: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red),
+                          color: Theme.of(context).primaryColor),
                       labelText: "Enter your Phone"),
                 ),
               ),
             ),
           ),
-              Container(
-                width: 150,
-                child: Column(
-                  children: [
-                    FloatingActionButton(
-                        heroTag: 'Register button',
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          "Register",
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        onPressed: () {
-                          register(context);
-                        }
+          Container(
+            width: 150,
+            child: Column(
+              children: [
+                FloatingActionButton(
+                    heroTag: 'Register button',
+                    backgroundColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Text(
+                      "Register",
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    FloatingActionButton(
-                        heroTag: 'Sign in button',
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          "Sign in",
-                          style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/login');
-                        }
-                    ),
-                  ],
-
+                    onPressed: () {
+                      register(context);
+                    }),
+                SizedBox(
+                  height: 10,
                 ),
-              ),
+                FloatingActionButton(
+                    heroTag: 'Sign in button',
+                    backgroundColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    child: Text(
+                      "Sign in",
+                      style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login');
+                    }),
+              ],
+            ),
+          ),
         ]),
       ),
     );
   }
 }
-

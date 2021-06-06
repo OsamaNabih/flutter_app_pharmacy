@@ -7,10 +7,11 @@ import 'package:path/path.dart';
 import 'package:flutter_app_pharmacy/widgets/drug.dart';
 import 'package:flutter_app_pharmacy/data/cart.dart';
 import 'package:provider/provider.dart';
-Widget drugTemplate(int id,String drug_name , int drug_price, String drug_desc, Function showDialog) {
-  return DrugRow( id,drug_name ,  drug_price, drug_desc, showDialog);
-}
 
+Widget drugTemplate(int id, String drug_name, int drug_price, String drug_desc,
+    Function showDialog) {
+  return DrugRow(id, drug_name, drug_price, drug_desc, showDialog);
+}
 
 class DrugRow extends StatelessWidget {
   Text txt_name;
@@ -19,10 +20,11 @@ class DrugRow extends StatelessWidget {
   Function showDialog;
   int DrugId;
   int price;
-  int quantity=0;
+  int quantity = 0;
   String DrugName;
 
-  DrugRow(int id ,String drug_name , int drug_price, String drug_desc, Function showDialog) {
+  DrugRow(int id, String drug_name, int drug_price, String drug_desc,
+      Function showDialog) {
     txt_name = Text(
       "Name: ${drug_name}",
       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -33,9 +35,9 @@ class DrugRow extends StatelessWidget {
     );
     this.showDialog = showDialog;
     this.drug_desc = drug_desc;
-    this.DrugId=id;
-    this.price=drug_price;
-    this.DrugName=drug_name;
+    this.DrugId = id;
+    this.price = drug_price;
+    this.DrugName = drug_name;
   }
 
   @override
@@ -56,59 +58,53 @@ class DrugRow extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-    /*Consumer<CartModel>(
+              /*Consumer<CartModel>(
     builder: (context, cart, child) {
     return Text("Total price: ${cart.totalPrice}");
     },
     );*/
               Container(
-                width: 120,
-                height: 30,
-                child: Consumer<cart>(
-                    builder: (context, cart, child) {
-                      return FloatingActionButton(
-                          heroTag: '',
-                          backgroundColor: Colors.red,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  10.0))),
-                          child: Text(
-                            "Add to list",
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          onPressed: () {
-                            int r = 0;
+                  width: 120,
+                  height: 30,
+                  child: Consumer<Cart>(builder: (context, cart, child) {
+                    return FloatingActionButton(
+                        heroTag: '',
+                        backgroundColor: Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10.0))),
+                        child: Text(
+                          "Add to list",
+                          style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        onPressed: () {
+                          int r = 0;
 
+                          for (int y = 0; y < cart.drugs.length; y++) {
+                            print("dd");
+                            if (cart.drugs[y].drugId == this.DrugId) {
+                              r = 1;
+                              break;
+                            }
+                          }
+                          if (r == 0) {
+                            cart.addDrug(DrugItem(
+                                this.DrugId, this.price, this.DrugName));
+                          }
+                          print(cart.drugs.length);
 
-
-                            for (int y = 0; y < cart.drugs.length; y++) {
-                        print("dd");
-                        if (cart.drugs[y].Drug_id == this.DrugId) {
-                          r = 1;
-
-                          break;
-                        }
-                      }
-                      if (r == 0) {
-                        cart.add_drug(drug_item(
-                            this.DrugId,this.price, this.DrugName));
-
-                      }
-                            print(cart.drugs.length);
-
-                      print(this.price);
-                          });
-
-                    })),
+                          print(this.price);
+                        });
+                  })),
               Container(
                 width: 120,
                 height: 30,
                 child: FloatingActionButton(
                   heroTag: '',
-                  backgroundColor: Colors.red,
+                  backgroundColor: Theme.of(context).primaryColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                   child: Icon(Icons.info_outline),
@@ -121,7 +117,9 @@ class DrugRow extends StatelessWidget {
                         color: Colors.white),
                   ),
                   */
-                  onPressed: () { this.showDialog(drug_desc); },
+                  onPressed: () {
+                    this.showDialog(drug_desc);
+                  },
                 ),
               ),
             ],
@@ -131,4 +129,3 @@ class DrugRow extends StatelessWidget {
     );
   }
 }
-
