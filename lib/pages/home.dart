@@ -17,12 +17,16 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
+enum Search_item { Category, Name, Price }
+
 class _HomeState extends State<Home> {
   int userId;
   String _token;
   String userName;
   String userType;
-
+  String groupValuefilters;
+  String groupValuecategory;
+  int catindex = 0;
   int catSelected = 0;
   List<CategoryDrug> drugsByCatList;
   DrugsByCat drugsByCat;
@@ -34,7 +38,15 @@ class _HomeState extends State<Home> {
   List<String> catNames;
   List<Drug> drugs = [];
   Widget app;
-    
+  Search_item _character = Search_item.Category;
+  String dropdownValue = 'Category';
+  RangeValues _currentRangeValues = const RangeValues(0, 500);
+  bool isChecked = false;
+  bool cat1 = false;
+  bool cat2 = false;
+  bool cat3 = false;
+  bool cat4 = false;
+
   final pageController = PageController(initialPage: 0, keepPage: true);
 
   final List<SideNavigationItem> navItems = [];
@@ -67,15 +79,13 @@ class _HomeState extends State<Home> {
   }
 
   void _onItemTapped(int index) {
-    if (index == selected)
-      return;
+    if (index == selected) return;
     setState(() {
       selected = index;
     });
     if (index == 2) {
       getlist_data();
-    }
-    else if (index == 1) {
+    } else if (index == 1) {
       // Cart page
       Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
         'user_name': this.userName,
@@ -121,6 +131,7 @@ class _HomeState extends State<Home> {
   }
 
   void init_page() async {
+    args = ModalRoute.of(context).settings.arguments;
     Map<String, dynamic> payload = Jwt.parseJwt(args['user_token']);
 
     this.userId = payload['user_id'];
@@ -132,7 +143,7 @@ class _HomeState extends State<Home> {
     this.catNames = getCatNames(this.drugsByCat);
     this.drugsByCatList = this.drugsByCat.getCatDrugs();
     this.drugs = drugsByCatList[catSelected].getDrugs();
-/*
+    /*
     this.catNames =
         (args == null || args['cat_names'] == null) ? [] : args['cat_names'];
     this.drugsByCat = (args == null || args['drugs_by_cat'] == null)
@@ -147,29 +158,28 @@ class _HomeState extends State<Home> {
         this.navItems.add(SideNavigationItem(title: catName));
       });
     }
-
   }
 
   @override
-    void didChangeDependencies() {
-      print('Before');
-      super.didChangeDependencies();
-      print('After');
-      init_page();
-    }
-
+  void didChangeDependencies() {
+    print('Before');
+    super.didChangeDependencies();
+    print('After');
+    args = ModalRoute.of(context).settings.arguments;
+    init_page();
+  }
 
   void updateDrugs() {
     setState(() {
-      this.drugs = drugsByCat == null ? [] : drugsByCatList[catSelected].getDrugs();
+      this.drugs =
+          drugsByCat == null ? [] : drugsByCatList[catSelected].getDrugs();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     print('build');
-    args = ModalRoute.of(context).settings.arguments;
-    init_page();
+    //init_page();
     print("Nav items length: ${navItems.length}");
     // var widgets = this.init.then((value) {
     return Scaffold(
@@ -203,7 +213,14 @@ class _HomeState extends State<Home> {
                 children: [
                   Icon(Icons.login_outlined),
                   SizedBox(width: 3),
-                  Text("Logout"),
+                  Text(
+                    "Logout",
+                    style: Theme.of(context)
+                        .appBarTheme
+                        .textTheme
+                        .bodyText2
+                        .copyWith(fontSize: 18),
+                  ),
                   SizedBox(width: 12),
                 ],
               ),
@@ -212,49 +229,162 @@ class _HomeState extends State<Home> {
               }),
         ],
       ),
-      body: Row(
-        children: <Widget>[
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
           Container(
-              width: MediaQuery.of(context).size.width * 0.25,
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  canvasColor: Colors.red,
+              // alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                    width: 5.0,
+                    color: Theme.of(context).primaryColor,
+                  )),
                 ),
-                child: SideNavigation(
-                  navItems: this.navItems,
-                  itemSelected: (index) {
-                    setState(() {
-                      print('index: $index');
-                      this.catSelected = index;
-                      updateDrugs();
-                    });
+                child: StatefulBuilder(
+                    builder: (BuildContext context, StateSetter setState) {
+                  return DropdownButton(
+                    //dropdownColor: Theme.of(context).primaryColor,
+                    iconEnabledColor: Theme.of(context).primaryColor,
 
-                    pageController.animateToPage(index,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.linear);
-                  },
-                  initialIndex: 0,
-                  actions: <Widget>[],
-                ),
-              )),
-          Expanded(
-            child: PageView.builder(
-              itemCount: this.navItems.length,
-              controller: pageController,
-              scrollDirection: Axis.vertical,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                  child: ListView(
-                    children: <Widget>[
-                      ...gridTemplate(this.drugs, showDialog),
+                    items: [
+                      DropdownMenuItem(
+                        child: Row(
+                          children: <Widget>[
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  cat1 = value;
+                                });
+                              },
+                              value: cat1,
+                            ),
+                            Text(
+                              'Headache',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        child: Row(
+                          children: <Widget>[
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  cat2 = value;
+                                });
+                              },
+                              value: cat2,
+                            ),
+                            Text(
+                              'Stomach ache',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        child: Row(
+                          children: <Widget>[
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  cat3 = value;
+                                });
+                              },
+                              value: cat3,
+                            ),
+                            Text(
+                              'Cough',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem(
+                        child: Row(
+                          children: <Widget>[
+                            Checkbox(
+                              onChanged: (bool value) {
+                                setState(() {
+                                  cat4 = value;
+                                });
+                              },
+                              value: cat4,
+                            ),
+                            Text(
+                              'Flu',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
-                  ),
-                );
+                    onChanged: (value) {},
+                    hint: Text(
+                      'Category',
+                      style: TextStyle(color: Theme.of(context).primaryColor),
+                    ),
+                  );
+                }),
+              )),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Price Range ",
+                style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
+              RangeSlider(
+                values: _currentRangeValues,
+                min: 0,
+                max: 500,
+                divisions: 500,
+                labels: RangeLabels(
+                  _currentRangeValues.start.round().toString(),
+                  _currentRangeValues.end.round().toString(),
+                ),
+                onChanged: (RangeValues values) {
+                  setState(() {
+                    _currentRangeValues = values;
+                  });
+                },
+              )
+            ],
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: GridView.builder(
+              // Create a grid with 2 columns. If you change the scrollDirection to
+              // horizontal, this produces 2 rows.
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 20,
+                mainAxisSpacing: 25,
+                childAspectRatio: MediaQuery.of(context).size.height *
+                    0.5 /
+                    MediaQuery.of(context).size.width,
+              ),
+              // Generate 100 widgets that display their index in the List.
+              //padding: EdgeInsets.all(15),
+              //padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              padding: EdgeInsets.symmetric(vertical: 0, horizontal: 15),
+
+              //shrinkWrap: true,
+              itemCount: this.drugs.length,
+              itemBuilder: (context, index) {
+                //return gridTemplate(this.drugs, showDescriptionDialog)[index];
+                return getDrug(drugs[index], showDescriptionDialog);
               },
             ),
-          )
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -279,7 +409,155 @@ class _HomeState extends State<Home> {
     );
   }
 
-  void showDialog(String drug_desc) {
+  Color getColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+      return Colors.blue;
+    }
+    return Theme.of(context).primaryColor;
+  }
+
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Choose Filter'),
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              children: <Widget>[
+                ListTile(
+                  title: Text('Category'),
+                  leading: Radio(
+                    value: Search_item.Category,
+                    groupValue: _character,
+                    activeColor: Colors.red,
+                    onChanged: (Search_item value) {
+                      print(value);
+                      print("old value ${_character}");
+                      setState(() {
+                        _character = value;
+                        this.groupValuefilters = _character.toString();
+                        print(_character);
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Name'),
+                  leading: Radio(
+                    value: Search_item.Name,
+                    groupValue: _character,
+                    activeColor: Colors.red,
+                    onChanged: (Search_item value) {
+                      print(value);
+                      print("old value ${_character}");
+                      setState(() {
+                        _character = value;
+                        this.groupValuefilters = _character.toString();
+                        print(_character);
+                      });
+                    },
+                  ),
+                ),
+                ListTile(
+                  title: Text('Price'),
+                  leading: Radio(
+                    value: Search_item.Price,
+                    groupValue: _character,
+                    activeColor: Colors.red,
+                    onChanged: (Search_item value) {
+                      print(value);
+                      print("old value ${_character}");
+                      setState(() {
+                        _character = value;
+                        this.groupValuefilters = _character.toString();
+                        print(_character);
+                      });
+                    },
+                  ),
+                ),
+              ],
+            );
+          }),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                print(this.groupValuefilters.toString());
+                if (this.groupValuefilters.toString() ==
+                    "Search_item.Category") {
+                  _categotyDialog();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  List<Widget> Category_buttons(BuildContext context, StateSetter setState) {
+    List<Widget> Category_items = [];
+    String groupvalue = this.catNames[0];
+    print(this.catNames.length);
+    for (int e = 0; e < this.catNames.length; e++) {
+      Category_items.add(
+        ListTile(
+            title: Text("${this.catNames[e]}"),
+            leading: Radio(
+              value: this.catNames[e],
+              groupValue: groupvalue,
+              onChanged: (String value) {
+                setState(() {
+                  groupvalue = value;
+                  this.catindex = e;
+                  this.groupValuecategory = this.catNames[e];
+                  print("cat ${groupvalue}");
+                });
+              },
+            )),
+      );
+    }
+    return Category_items;
+  }
+
+  Future<void> _categotyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Choose category'),
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              children: Category_buttons(context, setState),
+            );
+          }),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Approve'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                this.catSelected = this.catindex;
+                updateDrugs();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showDescriptionDialog(String drug_desc) {
     print('Inside showDialog');
     showGeneralDialog(
       barrierLabel: "Barrier",
@@ -288,55 +566,110 @@ class _HomeState extends State<Home> {
       transitionDuration: Duration(milliseconds: 700),
       context: context,
       pageBuilder: (_, __, ___) {
-        return Align(
-          alignment: Alignment.bottomCenter,
+        return Dialog(
+          elevation: 5,
           child: Container(
-              color: Colors.white,
-              height: 300,
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      "The Drug Description",
-                      style: TextStyle(
-                        fontSize: 25,
-                        color: Theme.of(context).primaryColor,
-                      ),
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Description",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
                     ),
                   ),
-                  Container(
-                    height: 10,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: MediaQuery.of(context).size.width * 0.6,
-                    decoration: BoxDecoration(
-                        color: Colors.amber,
-                        border: Border.all(
-                          color: Colors.redAccent,
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
-                    child: Center(
-                      child: Text(
-                        drug_desc,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
+                ),
+                Container(
+                  height: 10,
+                  color: Colors.white,
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 8.0),
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    drug_desc,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
                     ),
-                  )
-                ],
-              )),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
       transitionBuilder: (_, anim, __, child) {
         return SlideTransition(
-          position: Tween(begin: Offset(0, 1), end: Offset(0, 0)).animate(anim),
+          position:
+              Tween(begin: Offset(0, 1), end: Offset(0, 0.25)).animate(anim),
           child: child,
         );
       },
     );
   }
 }
+
+/*
+Dialog(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+                color: Colors.white,
+                height: MediaQuery.of(context).size.height * 0.45,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "The Drug Description",
+
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.normal,
+                          //color: Theme.of(context).primaryColor,
+                        ),
+
+                      ),
+
+
+                    ),
+                    Container(
+                      height: 10,
+                      color: Colors.white,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      decoration: BoxDecoration(
+                        //color: Colors.amber,
+                          border: Border.all(
+                            color: Colors.redAccent,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      child: Center(
+                        child: Text(
+                          drug_desc,
+                          style: TextStyle(
+                            fontSize: 20,
+                            //color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                )),
+          ),
+        );
+ */

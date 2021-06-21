@@ -70,3 +70,7 @@ List<Widget> getDrugs(List<Drug> drugs, Function showDialog) {
   //print(drugWidgets);
   return drugWidgets;
 }
+
+Widget getDrug(Drug drug, Function showDialog) {
+  return drugTemplate(drug.drugId, drug.drugName, drug.drugPrice, drug.drugDescription, showDialog);
+}

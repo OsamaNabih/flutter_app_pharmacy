@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_pharmacy/data/Admin_orders.dart';
-import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
-import 'package:flutter_app_pharmacy/data/list_order.dart';
-import 'package:flutter_app_pharmacy/pages/home.dart';
-import 'package:flutter_app_pharmacy/pages/loading.dart';
-import 'package:flutter_app_pharmacy/pages/login.dart';
-import 'package:flutter_app_pharmacy/pages/register.dart';
-import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
-import 'package:flutter_app_pharmacy/widgets/card_info.dart';
-import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
-import 'add_to-list_page.dart';
-import 'order_details.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_app_pharmacy/services/login.dart';
 
+import '../data/list_order.dart';
+import '../responses/user_login_response.dart';
+import '../services/card_info.dart';
+import '../services/home.dart';
+
+import '../services/login.dart';
 
 class List_order extends StatefulWidget {
   @override
@@ -28,12 +19,12 @@ class _List_orderState extends State<List_order> {
   UserLoginResponse _user;
 
   void init() {
-     this._user = UserLoginResponse(
-                    userName: args['user_name'],
-                    userType: args['user_type'],
-                    token: args['user_token'],
-                    userId: args['user_id'],
-                  );
+    this._user = UserLoginResponse(
+      userName: args['user_name'],
+      userType: args['user_type'],
+      token: args['user_token'],
+      userId: args['user_id'],
+    );
   }
 
   void _onItemTapped(int index) {
@@ -48,15 +39,10 @@ class _List_orderState extends State<List_order> {
         'user_token': _user.token,
         'user_id': _user.userId,
       });
-    }
-    else if (index == 0) {
+    } else if (index == 0) {
       navigateToHome(
           context,
-          UserLoginResponse(
-              userName: _user.userName,
-              userType: _user.userType,
-              userId: _user.userId,
-              token: _user.token,));
+          _user);
     }
   }
 
@@ -68,31 +54,53 @@ class _List_orderState extends State<List_order> {
 
     return Scaffold(
       appBar: AppBar(
+        centerTitle: false,
+        //leadingWidth: 5,
+        title: Row(children: [
+          IconButton(
+            icon: Icon(
+              Icons.account_circle_rounded,
+              size: 30,
+            ),
+            onPressed: () {
+              navigateToProfile(context, _user.token);
+            },
+          ),
+          Text(
+            '${_user.userName}',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ]),
+        //title: Text('Pharmacy App'),
+        //centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
-        title: Text(
-          "Pharmacy App",
-          style: TextStyle(
-              fontSize: 30, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        centerTitle: true,
+        actions: [
+          InkWell(
+              child: Row(
+                children: [
+                  Icon(Icons.login_outlined),
+                  SizedBox(width: 3),
+                  Text(
+                    "Logout",
+                    style: Theme.of(context)
+                        .appBarTheme
+                        .textTheme
+                        .bodyText2
+                        .copyWith(fontSize: 18),
+                  ),
+                  SizedBox(width: 12),
+                ],
+              ),
+              onTap: () {
+                logout(context);
+              }),
+        ],
       ),
       body: ListView(
         children: [
-          Center(
-              child: Row(children: <Widget>[
-            Icon(
-              Icons.account_box,
-              color: Theme.of(context).primaryColor,
-              size: 30,
-            ),
-            Text(
-              _user.userName,
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold),
-            ),
-          ])),
           ...item(list.orders),
         ],
       ),

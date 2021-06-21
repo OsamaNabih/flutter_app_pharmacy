@@ -412,7 +412,7 @@ CREATE TABLE `order status` (
 --
 
 INSERT INTO `order status` (`order_status_id`, `order_status_name`) VALUES
-(1, 'Pending Approval'),
+(1, 'Pending'),
 (2, 'Approved'),
 (3, 'Shipping'),
 (4, 'Delivered'),

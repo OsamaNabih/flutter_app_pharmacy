@@ -8,31 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
 
-/*
-Future<DrugsByCat> getDrugs() async {
-  var dataURI = Uri.http('10.0.2.2:3000', 'drugs/by_category');
-  var response = await http.get(dataURI);
-  if (response.statusCode != 200) {
-    throw ("Server error: ${response.body}");
-  }
-  final String responseString = response.body;
-  DrugsByCat drugsByCat = welcomeFromJson(responseString).drugsByCat;
-  return drugsByCat;
-}
-
-List<String> getCatNames(DrugsByCat drugsByCat) {
-  List<String> catNames = [];
-  if (drugsByCat == null) {
-    print('drugs are null');
-  }
-  drugsByCat.categoryDrugs.forEach((cat) {
-    print(cat.categoryName);
-    catNames.add(cat.categoryName);
-  });
-  return catNames;
-}
-*/
-
 void storeUserPreferences(UserLoginResponse user) async {
   UserPreferences.setString('user_name', user.userName);
   UserPreferences.setString('user_type', user.userType);
@@ -63,7 +38,6 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
     print('Saving SP');
 
     // Store credentials in shared preference
-    storeUserPreferences(user);
     Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.pushNamed(context, '/inventory', arguments: {
       'user_name': user.userName,
@@ -82,13 +56,10 @@ void navigateToHome(BuildContext context, UserLoginResponse user) async {
     //List<String> catNames = getCatNames(drugsByCat);
 
     // Store credentials in shared preference
-    storeUserPreferences(user);
     Navigator.popUntil(context, ModalRoute.withName('/'));
     Navigator.pushNamed(context, '/home', arguments: {
       'user_name': user.userName,
       'user_type': user.userType,
-      //'drugs_by_cat': drugsByCat.getCatDrugs(),
-      //'cat_names': catNames,
       'user_token': user.token,
     });
   }

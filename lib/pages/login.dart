@@ -19,6 +19,7 @@ class _LoginState extends State<Login> {
   List<String> _catNames = [];
   List<Drug> drugs = [];
 
+
   void signIn() async {
     var loginURI = Uri.http('10.0.2.2:3000', 'users/login');
     var response = await http.post(loginURI, body: {
@@ -31,6 +32,7 @@ class _LoginState extends State<Login> {
     if (response.statusCode == 200) {
       // Success
       // Redirect to home page
+      storeUserPreferences(user);
       navigateToHome(context, user);
     }
   }

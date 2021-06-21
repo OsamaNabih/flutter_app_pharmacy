@@ -9,12 +9,13 @@ void getHomePage(BuildContext context) async {
   String token = UserPreferences.getString('user_token');
   String userName = UserPreferences.getString('user_name');
   String userType = UserPreferences.getString('user_type');
-  int userId = Jwt.parseJwt(token)['user_id'];
+  
   print('SP token: $token');
 
   if (token == null || Jwt.getExpiryDate(token).isBefore(DateTime.now())) // No previous sign in or Sign in session expired
     Navigator.pushReplacementNamed(context, '/login');
   else {
+    int userId = Jwt.parseJwt(token)['user_id'];
     await navigateToHome(
         context, UserLoginResponse.data(userId, userName, userType, token));
   }

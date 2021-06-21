@@ -1,22 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_pharmacy/data/cart.dart';
-//import 'package:flutter_app_pharmacy/data/Add_to_Cart.dart';
-import 'package:flutter_app_pharmacy/pages/home.dart';
-import 'package:flutter_app_pharmacy/pages/loading.dart';
-import 'package:flutter_app_pharmacy/pages/login.dart';
-import 'package:flutter_app_pharmacy/pages/register.dart';
-import 'package:flutter_app_pharmacy/responses/user_login_response.dart';
-import 'package:flutter_app_pharmacy/services/login.dart';
-import 'package:flutter_app_pharmacy/widgets/card_info.dart';
-import 'package:flutter_app_pharmacy/widgets/Order_req.dart';
 import 'package:provider/provider.dart';
-import 'list.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:flutter_app_pharmacy/data/list_order.dart';
-import 'order_details.dart';
-import 'package:numberpicker/numberpicker.dart';
+
+import '../data/cart.dart';
+import '../responses/user_login_response.dart';
+import '../services/login.dart';
+import '../data/list_order.dart';
+import '../services/home.dart';
 
 class Add_to_list extends StatefulWidget {
   @override
@@ -63,38 +56,30 @@ class _Add_to_listState extends State<Add_to_list> {
     });
     if (index == 2) {
       getlist_data();
-    }
-    else if (index == 1) {
+    } else if (index == 1) {
       Navigator.pushReplacementNamed(context, '/add_to_list_page', arguments: {
         'user_name': _user.userName,
         'user_type': _user.userType,
         'user_token': _user.token,
         'user_id': _user.userId,
       });
-    }
-    else if (index == 0) {
+    } else if (index == 0) {
       navigateToHome(
           context,
-          UserLoginResponse(
-            userName: args['user_name'],
-            userType: args['user_type'],
-            token: args['user_token'],
-            userId: args['user_id'],
-          )
-        );
-              
+          _user);
+
       //Navigator.of(context)
       //.push(MaterialPageRoute(builder: (context) => Home()));
     }
   }
 
   void init() {
-     this._user = UserLoginResponse(
-                    userName: args['user_name'],
-                    userType: args['user_type'],
-                    token: args['user_token'],
-                    userId: args['user_id'],
-                  );
+    this._user = UserLoginResponse(
+      userName: args['user_name'],
+      userType: args['user_type'],
+      token: args['user_token'],
+      userId: args['user_id'],
+    );
   }
 
   @override
@@ -102,113 +87,135 @@ class _Add_to_listState extends State<Add_to_list> {
     args = ModalRoute.of(context).settings.arguments;
     init();
     this.Client_name = args["user_name"];
-    return MaterialApp(
-      title: "app",
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Your Order'),
-          backgroundColor: Theme.of(context).primaryColor,
-          centerTitle: true,
-        ),
-        body: Container(child: Consumer<Cart>(builder: (context, cart, child) {
-          this.cart_len = cart.drugs.length;
-          this.controlers.clear();
-          for (int r = 0; r < this.cart_len; r++) {
-            TextEditingController _controller = TextEditingController();
-            _controller.text = "${cart.drugs[r].quantity}";
-            this.controlers.add(_controller);
-          }
-
-          return Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height * 10 / 100,
-                child: Row(children: <Widget>[
-                  Icon(
-                    Icons.account_box,
-                    color: Theme.of(context).primaryColor,
-                    size: 30,
-                  ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        //leadingWidth: 5,
+        title: Row(children: [
+          IconButton(
+            icon: Icon(
+              Icons.account_circle_rounded,
+              size: 30,
+            ),
+            onPressed: () {
+              navigateToProfile(context, _user.token);
+            },
+          ),
+          Text(
+            '${_user.userName}',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ]),
+        //title: Text('Pharmacy App'),
+        //centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          InkWell(
+              child: Row(
+                children: [
+                  Icon(Icons.login_outlined),
+                  SizedBox(width: 3),
                   Text(
-                    this.Client_name,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.bold),
+                    "Logout",
+                    style: Theme.of(context)
+                        .appBarTheme
+                        .textTheme
+                        .bodyText2
+                        .copyWith(fontSize: 18),
                   ),
-                ]),
+                  SizedBox(width: 12),
+                ],
               ),
-              Container(
-                height: MediaQuery.of(context).size.height * 55 / 100,
-                child: ListView(
-                  children: [
-                    ...Drug_list(),
-                  ],
-                ),
+              onTap: () {
+                logout(context);
+              }),
+        ],
+      ),
+      body: Container(child: Consumer<Cart>(builder: (context, cart, child) {
+        this.cart_len = cart.drugs.length;
+        this.controlers.clear();
+        for (int r = 0; r < this.cart_len; r++) {
+          TextEditingController _controller = TextEditingController();
+          _controller.text = "${cart.drugs[r].quantity}";
+          this.controlers.add(_controller);
+        }
+
+        return Column(
+          children: [
+            SizedBox(height: 15),
+            Container(
+              height: MediaQuery.of(context).size.height * 55 / 100,
+              child: ListView(
+                children: [
+                  ...Drug_list(),
+                ],
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 15 / 100,
-                alignment: Alignment.center,
-                color: Theme.of(context).primaryColor,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.40,
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        "Total cost = ${cart.totalCost()} ",
-                        style: TextStyle(fontSize: 20, color: Colors.white),
-                      ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 15 / 100,
+              alignment: Alignment.center,
+              color: Theme.of(context).primaryColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.40,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Total cost = ${cart.totalCost()} ",
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
-                    Container(
-                        width: MediaQuery.of(context).size.width * 0.40,
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          height: 30,
-                          color: Colors.white,
-                          child: FloatingActionButton(
-                              heroTag: 'Buy',
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(0.0))),
-                              child: Text(
-                                "Checkout",
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor),
-                              ),
-                              onPressed: () {}),
-                        ))
-                  ],
-                ),
+                  ),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.40,
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        height: 30,
+                        color: Colors.white,
+                        child: FloatingActionButton(
+                            heroTag: 'Buy',
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(0.0))),
+                            child: Text(
+                              "Checkout",
+                              style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                            onPressed: () {}),
+                      ))
+                ],
               ),
-            ],
-          );
-        }) /**/
-            ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_shopping_cart),
-              label: 'Selected drugs',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              label: 'History',
             ),
           ],
-          currentIndex: selected,
-          selectedItemColor: Theme.of(context).primaryColor,
-          onTap: _onItemTapped,
-        ),
+        );
+      }) /**/
+          ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_shopping_cart),
+            label: 'Selected drugs',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.book),
+            label: 'History',
+          ),
+        ],
+        currentIndex: selected,
+        selectedItemColor: Theme.of(context).primaryColor,
+        onTap: _onItemTapped,
       ),
     );
   }
@@ -290,6 +297,7 @@ class _Add_to_listState extends State<Add_to_list> {
                                     "${cart.drugs[index].drugName}",
                                     style: TextStyle(
                                         fontSize: 15, color: Colors.black),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ],
                               ),

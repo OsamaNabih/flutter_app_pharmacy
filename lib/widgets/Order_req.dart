@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_pharmacy/data/list_order.dart';
-import 'package:flutter_app_pharmacy/data/order.dart';
-import 'package:flutter_app_pharmacy/data/orders.dart';
-import 'package:flutter_app_pharmacy/data/order.dart';
-import 'package:flutter_app_pharmacy/widgets/card_info.dart';
+
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
-import 'package:provider/provider.dart';
+import '../services/card_info.dart';
 
 class order_request extends StatefulWidget {
   final int id;
@@ -113,7 +109,7 @@ class _order_requestState extends State<order_request> {
               ),
               onTap: () async {
                 //here
-                Item drug_list = await GetDrugsData(widget.id);
+                Item drug_list = await getDrugsData(widget.id);
                 Navigator.pushNamed(context, '/order_details', arguments: {
                   'DrugObject': drug_list.drugs,
                   'user_name': widget.name,
@@ -176,6 +172,11 @@ class _order_requestState extends State<order_request> {
                         width: 100,
                         height: 25,
                         child: InkWell(
+                          onTap: (){
+                            setState(() {
+
+                            });
+                          },
                           child: Icon(
                             Icons.cancel_outlined,
                             color: Theme.of(context).primaryColor,

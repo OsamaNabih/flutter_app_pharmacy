@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_app_pharmacy/data/Add_to_Cart.dart';
 import 'package:flutter_app_pharmacy/data/cart.dart';
@@ -19,30 +20,155 @@ class DrugRow extends StatelessWidget {
   String drug_desc;
   Function showDialog;
   int DrugId;
-  int price;
+  int drugPrice;
   int quantity = 0;
   String DrugName;
 
   DrugRow(int id, String drug_name, int drug_price, String drug_desc,
       Function showDialog) {
     txt_name = Text(
-      "Name: ${drug_name}",
+      "${drug_name}",
       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      //oftWrap: true,
+      //overflow: TextOverflow.clip,
+      //maxLines: 2,
     );
     txt_price = Text(
-      "Price: ${drug_price}",
+      "${drug_price}",
       style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
     );
     this.showDialog = showDialog;
     this.drug_desc = drug_desc;
     this.DrugId = id;
-    this.price = drug_price;
+    this.drugPrice = drug_price;
     this.DrugName = drug_name;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Container(
+      padding: EdgeInsets.fromLTRB(7.0, 7.0, 0.0, 0.0),
+      //width: 100,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey[600], width: 0.3),
+          //border: Border(
+        //bottom: BorderSide(width: 10.0, color: Colors.red[200]),)
+      ),
+      child: Column(
+        //crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Consumer<Cart>(builder: (context, cart, child) {
+            return InkWell(
+              radius: 25,
+              child: Container(
+                //width: 60,
+                alignment: Alignment.topRight,
+                child: Icon(
+                  Icons.add,
+                  size: 30,
+                  color: Colors.red,
+                ),
+              ),
+              onTap: () {
+                int r = 0;
+
+                for (int y = 0; y < cart.drugs.length; y++) {
+                  print("dd");
+                  if (cart.drugs[y].drugId == this.DrugId) {
+                    r = 1;
+                    break;
+                  }
+                }
+                if (r == 0) {
+                  cart.addDrug(
+                      DrugItem(this.DrugId, this.drugPrice, this.DrugName));
+                }
+                print(cart.drugs.length);
+
+                print(this.drugPrice);
+              },
+            );
+          }),
+          InkWell(
+            child: Column(
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  //child: Image.asset('images/image1.jpg'),
+                  //radius: 25,
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(0)),
+                    color: Theme.of(context).primaryColor,
+                  ),
+                    child: Center(
+                      child: Text(
+                        "Drug",
+                        style: TextStyle(color: Colors.white, fontSize: 10),
+                      ),
+                    ),
+                  ),
+                
+                Container(
+                  height: 5,
+                ),
+                Container(
+                  //height: 60,
+                  child: Row(
+                    children: [
+                      //Flexible(child: Text("Name :", style: TextStyle(color: Colors.red))),
+                      //FittedBox(
+                      Flexible(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "${DrugName}",
+                              style: TextStyle(
+                                  color: Colors.black),
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                        //),
+                      ),
+                      //),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 3,
+                ),
+                Row(
+                  children: [
+                    //Text("Price :", style: TextStyle(color: Colors.red)),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: FittedBox(
+                          child: Text(
+                            "${drugPrice} EGP",
+                            style: TextStyle(
+                                color: Colors.orange[800],
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                      //),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            onTap: () {
+              this.showDialog(drug_desc);
+            },
+          )
+        ],
+      ),
+    );
+    /*Card(
       color: Colors.amber,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -81,22 +207,7 @@ class DrugRow extends StatelessWidget {
                               color: Colors.white),
                         ),
                         onPressed: () {
-                          int r = 0;
 
-                          for (int y = 0; y < cart.drugs.length; y++) {
-                            print("dd");
-                            if (cart.drugs[y].drugId == this.DrugId) {
-                              r = 1;
-                              break;
-                            }
-                          }
-                          if (r == 0) {
-                            cart.addDrug(DrugItem(
-                                this.DrugId, this.price, this.DrugName));
-                          }
-                          print(cart.drugs.length);
-
-                          print(this.price);
                         });
                   })),
               Container(
@@ -126,6 +237,6 @@ class DrugRow extends StatelessWidget {
           ),
         ],
       ),
-    );
+    );*/
   }
 }
