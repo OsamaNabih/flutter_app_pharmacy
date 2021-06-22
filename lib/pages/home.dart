@@ -24,6 +24,7 @@ class _HomeState extends State<Home> {
   String _token;
   String userName;
   String userType;
+  UserLoginResponse _user;
   String groupValuefilters;
   String groupValuecategory;
   int catindex = 0;
@@ -47,11 +48,17 @@ class _HomeState extends State<Home> {
   bool cat3 = false;
   bool cat4 = false;
 
+
   final pageController = PageController(initialPage: 0, keepPage: true);
 
   final List<SideNavigationItem> navItems = [];
 
   final initialTab = 0;
+
+  Color _accentColor;
+  Color _primaryColor;
+  
+  AppBar appBar;
 
   void getlist_data() async {
     String token = UserPreferences.getString('user_token');
@@ -130,15 +137,25 @@ class _HomeState extends State<Home> {
     return catNames;
   }
 
-  void init_page() async {
+  void profileNavigationHandler() {
+    navigateToProfile(context, _token);
+  }
+
+  void initPage() async {
     args = ModalRoute.of(context).settings.arguments;
     Map<String, dynamic> payload = Jwt.parseJwt(args['user_token']);
+    _primaryColor = Theme.of(context).primaryColor;
+    _accentColor = Theme.of(context).accentColor;
 
     this.userId = payload['user_id'];
     this.userName = _userName();
     this.userType = payload['user_type'];
+    _user = UserLoginResponse.data(userId, userName, userType, _token);
+    
     print('Name: $userName, id: $userId');
 
+    appBar = setAppBar(context, profileNavigationHandler, userName);
+    
     this.drugsByCat = await getDrugs();
     this.catNames = getCatNames(this.drugsByCat);
     this.drugsByCatList = this.drugsByCat.getCatDrugs();
@@ -166,7 +183,7 @@ class _HomeState extends State<Home> {
     super.didChangeDependencies();
     print('After');
     args = ModalRoute.of(context).settings.arguments;
-    init_page();
+    initPage();
   }
 
   void updateDrugs() {
@@ -179,56 +196,12 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     print('build');
-    //init_page();
+    //initPage();
     print("Nav items length: ${navItems.length}");
+    print(appBar);
     // var widgets = this.init.then((value) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        //leadingWidth: 5,
-        title: Row(children: [
-          IconButton(
-            icon: Icon(
-              Icons.account_circle_rounded,
-              size: 30,
-            ),
-            onPressed: () {
-              navigateToProfile(context, _token);
-            },
-          ),
-          Text(
-            '${this.userName}',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ]),
-        //title: Text('Pharmacy App'),
-        //centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          InkWell(
-              child: Row(
-                children: [
-                  Icon(Icons.login_outlined),
-                  SizedBox(width: 3),
-                  Text(
-                    "Logout",
-                    style: Theme.of(context)
-                        .appBarTheme
-                        .textTheme
-                        .bodyText2
-                        .copyWith(fontSize: 18),
-                  ),
-                  SizedBox(width: 12),
-                ],
-              ),
-              onTap: () {
-                logout(context);
-              }),
-        ],
-      ),
+      appBar: this.appBar,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -240,14 +213,14 @@ class _HomeState extends State<Home> {
                   border: Border(
                       bottom: BorderSide(
                     width: 5.0,
-                    color: Theme.of(context).primaryColor,
+                    color: _primaryColor,
                   )),
                 ),
                 child: StatefulBuilder(
                     builder: (BuildContext context, StateSetter setState) {
                   return DropdownButton(
-                    //dropdownColor: Theme.of(context).primaryColor,
-                    iconEnabledColor: Theme.of(context).primaryColor,
+                    //dropdownColor: _primaryColor,
+                    iconEnabledColor: _primaryColor,
 
                     items: [
                       DropdownMenuItem(
@@ -264,7 +237,7 @@ class _HomeState extends State<Home> {
                             Text(
                               'Headache',
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                                  color: _primaryColor),
                             ),
                           ],
                         ),
@@ -283,7 +256,7 @@ class _HomeState extends State<Home> {
                             Text(
                               'Stomach ache',
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                                  color: _primaryColor),
                             ),
                           ],
                         ),
@@ -302,7 +275,7 @@ class _HomeState extends State<Home> {
                             Text(
                               'Cough',
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                                  color: _primaryColor),
                             ),
                           ],
                         ),
@@ -321,7 +294,7 @@ class _HomeState extends State<Home> {
                             Text(
                               'Flu',
                               style: TextStyle(
-                                  color: Theme.of(context).primaryColor),
+                                  color: _primaryColor),
                             ),
                           ],
                         ),
@@ -330,7 +303,7 @@ class _HomeState extends State<Home> {
                     onChanged: (value) {},
                     hint: Text(
                       'Category',
-                      style: TextStyle(color: Theme.of(context).primaryColor),
+                      style: TextStyle(color: _primaryColor),
                     ),
                   );
                 }),
@@ -340,7 +313,7 @@ class _HomeState extends State<Home> {
             children: [
               Text(
                 "Price Range ",
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: TextStyle(color: _primaryColor),
               ),
               RangeSlider(
                 values: _currentRangeValues,
@@ -403,7 +376,7 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: selected,
-        selectedItemColor: Theme.of(context).primaryColor,
+        selectedItemColor: _primaryColor,
         onTap: _onItemTapped,
       ),
     );
@@ -418,7 +391,7 @@ class _HomeState extends State<Home> {
     if (states.any(interactiveStates.contains)) {
       return Colors.blue;
     }
-    return Theme.of(context).primaryColor;
+    return _primaryColor;
   }
 
   Future<void> _showMyDialog() async {
@@ -583,7 +556,7 @@ class _HomeState extends State<Home> {
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
+                      color: _primaryColor,
                     ),
                   ),
                 ),
@@ -638,7 +611,7 @@ Dialog(
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.normal,
-                          //color: Theme.of(context).primaryColor,
+                          //color: _primaryColor,
                         ),
 
                       ),
@@ -663,7 +636,7 @@ Dialog(
                           drug_desc,
                           style: TextStyle(
                             fontSize: 20,
-                            //color: Theme.of(context).primaryColor,
+                            //color: _primaryColor,
                           ),
                         ),
                       ),

@@ -4,6 +4,49 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app_pharmacy/utils/user_preferences.dart';
 
+AppBar setAppBar(BuildContext context, Function profileNavigationHandler, String userName) {
+    AppBar appBar = AppBar(
+        centerTitle: false,
+        title: TextButton.icon(
+          icon: Icon(
+            Icons.account_circle_rounded,
+            size: 30,
+            color: Theme.of(context).accentColor,
+          ),
+          label: Text(
+            '$userName',
+            style: TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).accentColor,
+            ),
+          ),
+          onPressed: profileNavigationHandler
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          InkWell(
+              child: TextButton.icon(
+                icon: Icon(Icons.login_outlined,
+                    color: Theme.of(context).accentColor),
+                label: Text(
+                  "Logout",
+                  style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).accentColor,
+                  ),
+                ),
+              ),
+              onTap: () {
+                logout(context);
+              }),
+        ],
+      );
+      return appBar;
+  }
+
+
 void navigateToProfile(BuildContext context, String token) async {
   var args = Jwt.parseJwt(token);
   int userId = args['user_id'];

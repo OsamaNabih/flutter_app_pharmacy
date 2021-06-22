@@ -40,31 +40,32 @@ void main() async {
         '/login': (context) => Login(),
         '/register': (context) => Register(),
         '/list': (context) => List_order(),
-        '/order_details': (context) => Order_D(),
+        //'/order_details': (context) => Order_D(),
         '/add_to_list_page': (context) => Add_to_list(),
         '/profile': (context) => Profile(),
         '/inventory': (context) => Admin(),
       },
       theme: ThemeData(
         primarySwatch: Colors.red,
-        //accentColor: Colors.yellowAccent,
+        accentColor: Colors.white,
         // errorColor: Colors.red,
+        //brightness: Brightness.light,
 
+        /*
         fontFamily: 'Quicksand',
         textTheme: ThemeData.light().textTheme.copyWith(
               bodyText2: TextStyle(
                 color: Colors.white,
               ),
-              /*
-          headline6: TextStyle(
-            fontFamily: 'OpenSans',
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-          */
+
               button: TextStyle(color: Colors.white),
             ),
+        */
+        /*
         appBarTheme: AppBarTheme(
+          iconTheme: IconThemeData.fallback().copyWith(
+            color: Colors.white,
+          ),
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline5: TextStyle(
                   color: Colors.white,
@@ -85,6 +86,7 @@ void main() async {
                 button: TextStyle(color: Colors.white),
               ),
         ),
+        */
       ),
     ),
   ));

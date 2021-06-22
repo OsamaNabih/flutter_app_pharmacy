@@ -4,6 +4,7 @@ import '../data/list_order.dart';
 import '../responses/user_login_response.dart';
 import '../services/card_info.dart';
 import '../services/home.dart';
+import '../pages/home.dart';
 
 import '../services/login.dart';
 
@@ -17,6 +18,11 @@ class _List_orderState extends State<List_order> {
   var args;
   list_order list;
   UserLoginResponse _user;
+  AppBar appBar;
+
+  void profileNavigationHandler() {
+    navigateToProfile(context, _user.token);
+  }
 
   void init() {
     this._user = UserLoginResponse(
@@ -25,6 +31,7 @@ class _List_orderState extends State<List_order> {
       token: args['user_token'],
       userId: args['user_id'],
     );
+    appBar = setAppBar(context, profileNavigationHandler, _user.userName);
   }
 
   void _onItemTapped(int index) {
@@ -53,52 +60,7 @@ class _List_orderState extends State<List_order> {
     init();
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        //leadingWidth: 5,
-        title: Row(children: [
-          IconButton(
-            icon: Icon(
-              Icons.account_circle_rounded,
-              size: 30,
-            ),
-            onPressed: () {
-              navigateToProfile(context, _user.token);
-            },
-          ),
-          Text(
-            '${_user.userName}',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ]),
-        //title: Text('Pharmacy App'),
-        //centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          InkWell(
-              child: Row(
-                children: [
-                  Icon(Icons.login_outlined),
-                  SizedBox(width: 3),
-                  Text(
-                    "Logout",
-                    style: Theme.of(context)
-                        .appBarTheme
-                        .textTheme
-                        .bodyText2
-                        .copyWith(fontSize: 18),
-                  ),
-                  SizedBox(width: 12),
-                ],
-              ),
-              onTap: () {
-                logout(context);
-              }),
-        ],
-      ),
+      appBar: appBar,
       body: ListView(
         children: [
           ...item(list.orders),

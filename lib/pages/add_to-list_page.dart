@@ -25,6 +25,11 @@ class _Add_to_listState extends State<Add_to_list> {
   var args;
   String Client_name;
   UserLoginResponse _user;
+  AppBar appBar;
+
+  void profileNavigationHandler() {
+    navigateToProfile(context, _user.token);
+  }
 
   void getlist_data() async {
     var response;
@@ -80,6 +85,7 @@ class _Add_to_listState extends State<Add_to_list> {
       token: args['user_token'],
       userId: args['user_id'],
     );
+    appBar = setAppBar(context, profileNavigationHandler, _user.userName);
   }
 
   @override
@@ -88,52 +94,7 @@ class _Add_to_listState extends State<Add_to_list> {
     init();
     this.Client_name = args["user_name"];
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        //leadingWidth: 5,
-        title: Row(children: [
-          IconButton(
-            icon: Icon(
-              Icons.account_circle_rounded,
-              size: 30,
-            ),
-            onPressed: () {
-              navigateToProfile(context, _user.token);
-            },
-          ),
-          Text(
-            '${_user.userName}',
-            style: TextStyle(
-              fontSize: 17,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ]),
-        //title: Text('Pharmacy App'),
-        //centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
-        actions: [
-          InkWell(
-              child: Row(
-                children: [
-                  Icon(Icons.login_outlined),
-                  SizedBox(width: 3),
-                  Text(
-                    "Logout",
-                    style: Theme.of(context)
-                        .appBarTheme
-                        .textTheme
-                        .bodyText2
-                        .copyWith(fontSize: 18),
-                  ),
-                  SizedBox(width: 12),
-                ],
-              ),
-              onTap: () {
-                logout(context);
-              }),
-        ],
-      ),
+      appBar: appBar,
       body: Container(child: Consumer<Cart>(builder: (context, cart, child) {
         this.cart_len = cart.drugs.length;
         this.controlers.clear();
