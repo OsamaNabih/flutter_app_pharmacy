@@ -343,11 +343,11 @@ INSERT INTO `orders` (`order_id`, `order_date`, `user_id`, `order_status_id`, `o
 (7, '2021-01-11 21:24:35', 6, 2, 'Phasellus sit amet erat.'),
 (8, '2019-04-15 06:41:19', 13, 3, 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.'),
 (9, '2019-11-06 15:23:48', 1, 2, 'Praesent blandit.'),
-(10, '2021-05-20 15:23:48', 16, 1, '4th floor'),
-(11, '2021-05-18 10:00:48', 16, 2, '4th floor'),
-(12, '2021-05-10 12:23:48', 16, 3, '4th floor'),
+(10, '2021-05-10 15:23:48', 16, 1, '4th floor'),
+(11, '2021-05-17 10:00:48', 16, 2, '4th floor'),
+(12, '2021-05-17 12:23:48', 16, 3, '4th floor'),
 (13, '2021-05-18 10:00:48', 16, 5, '4th floor'),
-(14, '2021-04-17 13:25:12', 18, 5, 'Thank you');
+(14, '2021-04-20 13:25:12', 18, 5, 'Thank you');
 
 
 -- --------------------------------------------------------
@@ -645,7 +645,8 @@ CREATE VIEW `Users Orders`
 AS
 SELECT SUM(drug_price*order_drug_quantity) as `Total Cost`, user_id, user_name, order_id, order_status_name, order_date, order_note  
 FROM (Drugs JOIN (Orders NATURAL JOIN `Order drugs`) ON drug_id = order_drug_id) NATURAL JOIN `Order Status` NATURAL JOIN Users
-GROUP BY order_id;
+GROUP BY order_id
+ORDER BY user_id ASC, order_id DESC;
 
 -- --------------------------------------------------------
 

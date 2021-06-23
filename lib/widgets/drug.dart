@@ -9,53 +9,45 @@ import 'package:flutter_app_pharmacy/widgets/drug.dart';
 import 'package:flutter_app_pharmacy/data/cart.dart';
 import 'package:provider/provider.dart';
 
-Widget drugTemplate(int id, String drug_name, int drug_price, String drug_desc,
-    Function showDialog) {
-  return DrugRow(id, drug_name, drug_price, drug_desc, showDialog);
-}
-
 class DrugRow extends StatelessWidget {
-  Text txt_name;
-  Text txt_price;
-  String drug_desc;
-  Function showDialog;
-  int DrugId;
-  int drugPrice;
-  int quantity = 0;
-  String DrugName;
+  /*
+  final String drugDesc;
+  final Function showDialog;
+  final int drug.drugId;
+  final int drug.drugPrice;
+  final int quantity = 0;
+  final String drug.drugName;
+  */
+  final Drug drug;
+  final Function showDialog;
 
-  DrugRow(int id, String drug_name, int drug_price, String drug_desc,
-      Function showDialog) {
-    txt_name = Text(
-      "${drug_name}",
-      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-      //oftWrap: true,
-      //overflow: TextOverflow.clip,
-      //maxLines: 2,
-    );
-    txt_price = Text(
-      "${drug_price}",
-      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-    );
-    this.showDialog = showDialog;
-    this.drug_desc = drug_desc;
-    this.DrugId = id;
-    this.drugPrice = drug_price;
-    this.DrugName = drug_name;
-  }
+  const DrugRow({
+    @required this.drug,
+    @required this.showDialog,
+  });
+
+  /*
+  const DrugRow({
+    @required this.drug.drugId, 
+    @required this.drug.drugName, 
+    @required this.drug.drugPrice, 
+    @required this.drugDesc,
+    @required this.showDialog});
+    */
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(7.0, 7.0, 0.0, 0.0),
+      //padding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
       //width: 100,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey[600], width: 0.3),
-          //border: Border(
+        //border: Border(
         //bottom: BorderSide(width: 10.0, color: Colors.red[200]),)
       ),
       child: Column(
         //crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Consumer<Cart>(builder: (context, cart, child) {
             return InkWell(
@@ -74,18 +66,18 @@ class DrugRow extends StatelessWidget {
 
                 for (int y = 0; y < cart.drugs.length; y++) {
                   print("dd");
-                  if (cart.drugs[y].drugId == this.DrugId) {
+                  if (cart.drugs[y].drugId == this.drug.drugId) {
                     r = 1;
                     break;
                   }
                 }
                 if (r == 0) {
-                  cart.addDrug(
-                      DrugItem(this.DrugId, this.drugPrice, this.DrugName));
+                  cart.addDrug(DrugItem(this.drug.drugId, this.drug.drugPrice,
+                      this.drug.drugName));
                 }
                 print(cart.drugs.length);
 
-                print(this.drugPrice);
+                print(this.drug.drugPrice);
               },
             );
           }),
@@ -102,14 +94,13 @@ class DrugRow extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(0)),
                     color: Theme.of(context).primaryColor,
                   ),
-                    child: Center(
-                      child: Text(
-                        "Drug",
-                        style: TextStyle(color: Colors.white, fontSize: 10),
-                      ),
+                  child: Center(
+                    child: Text(
+                      "Drug",
+                      style: TextStyle(color: Colors.white, fontSize: 10),
                     ),
                   ),
-                
+                ),
                 Container(
                   height: 5,
                 ),
@@ -120,17 +111,16 @@ class DrugRow extends StatelessWidget {
                       //Flexible(child: Text("Name :", style: TextStyle(color: Colors.red))),
                       //FittedBox(
                       Flexible(
-                          child: Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "${DrugName}",
-                              style: TextStyle(
-                                  color: Colors.black),
-                              softWrap: true,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
-                            ),
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "${drug.drugName}",
+                            style: TextStyle(color: Colors.black),
+                            softWrap: true,
+                            overflow: TextOverflow.ellipsis,
+                            //maxLines: 2,
                           ),
+                        ),
                         //),
                       ),
                       //),
@@ -148,7 +138,7 @@ class DrugRow extends StatelessWidget {
                         alignment: Alignment.center,
                         child: FittedBox(
                           child: Text(
-                            "${drugPrice} EGP",
+                            "${drug.drugPrice} EGP",
                             style: TextStyle(
                                 color: Colors.orange[800],
                                 fontWeight: FontWeight.bold),
@@ -162,81 +152,11 @@ class DrugRow extends StatelessWidget {
               ],
             ),
             onTap: () {
-              this.showDialog(drug_desc);
+              this.showDialog(drug.drugDescription);
             },
           )
         ],
       ),
     );
-    /*Card(
-      color: Colors.amber,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          ListTile(
-            leading: CircleAvatar(
-              //child: Image.asset('images/image1.jpg'),
-              radius: 30,
-            ),
-            title: txt_name,
-            subtitle: txt_price,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              /*Consumer<CartModel>(
-    builder: (context, cart, child) {
-    return Text("Total price: ${cart.totalPrice}");
-    },
-    );*/
-              Container(
-                  width: 120,
-                  height: 30,
-                  child: Consumer<Cart>(builder: (context, cart, child) {
-                    return FloatingActionButton(
-                        heroTag: '',
-                        backgroundColor: Theme.of(context).primaryColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0))),
-                        child: Text(
-                          "Add to list",
-                          style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        onPressed: () {
-
-                        });
-                  })),
-              Container(
-                width: 120,
-                height: 30,
-                child: FloatingActionButton(
-                  heroTag: '',
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  child: Icon(Icons.info_outline),
-                  /*
-                  child: Text(
-                    "drug description",
-                    style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                  */
-                  onPressed: () {
-                    this.showDialog(drug_desc);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );*/
   }
 }

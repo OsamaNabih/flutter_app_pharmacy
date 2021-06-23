@@ -8,31 +8,36 @@ import '../data/drugs_by_cat.dart';
 import '../services/card_info.dart';
 
 class CardInfo extends StatelessWidget {
-  String datetime;
-  String price;
-  bool flag;
-  String status;
-  Function f;
-  Color color;
-  Item _drugList;
-  int drugId;
-  String _date;
-  DateTime _datetime;
+  final String datetime;
+  final String price;
+  final String status;
+  final int drugId;
 
-  CardInfo({this.datetime, this.price, this.status, this.f, this.drugId}) {
+  Color get color {
     if (status == "Approved" || status == "Delivered") {
-      color = Colors.green;
+      return Colors.green;
     } else if (status == "Rejected") {
-      color = Colors.red;
+      return Colors.red;
     } else if (status == "Pending") {
-      color = Colors.yellow[700];
+      return Colors.yellow[700];
     } else if (status == "Shipping") {
-      color = Colors.brown;
+      return Colors.brown;
     }
-    List<String> splitDateTime = datetime.split('T');
-    _date = splitDateTime[0];
-    _datetime = DateTime.parse(_date);
+    else
+      return Colors.grey;
   }
+
+  DateTime get _datetime {
+    List<String> splitDateTime = datetime.split('T');
+    String date = splitDateTime[0];
+    return DateTime.parse(date);
+  }
+
+  const CardInfo({
+    @required this.datetime, 
+    @required this.price, 
+    @required this.status, 
+    @required this.drugId});
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +83,7 @@ class CardInfo extends StatelessWidget {
           ),
         ),
         onTap: () async {
-          _drugList = await getDrugsData(drugId);
+          Item _drugList = await getDrugsData(drugId);
           navigateToOrder(context, _drugList, this.drugId, args['user_name']);
         });
   }

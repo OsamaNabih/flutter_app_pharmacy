@@ -361,8 +361,8 @@ class _Add_to_listState extends State<Add_to_list> {
                                 });
                                 cart.drugs[index].quantity =
                                     cart.drugs[index].quantity - 1;
-                                if (cart.drugs[index].quantity < 0) {
-                                  cart.drugs[index].quantity = 0;
+                                if (cart.drugs[index].quantity <= 0) {
+                                  cart.drugs[index].quantity = 1;
                                 }
                               },
                             ),

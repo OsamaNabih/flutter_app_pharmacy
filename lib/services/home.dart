@@ -25,22 +25,25 @@ AppBar setAppBar(BuildContext context, Function profileNavigationHandler, String
         ),
         backgroundColor: Theme.of(context).primaryColor,
         actions: [
-          InkWell(
-              child: TextButton.icon(
-                icon: Icon(Icons.login_outlined,
-                    color: Theme.of(context).accentColor),
-                label: Text(
-                  "Logout",
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).accentColor,
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: InkWell(
+                child: TextButton.icon(
+                  icon: Icon(Icons.login_outlined,
+                      color: Theme.of(context).accentColor),
+                  label: Text(
+                    "Logout",
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).accentColor,
+                    ),
                   ),
                 ),
-              ),
-              onTap: () {
-                logout(context);
-              }),
+                onTap: () {
+                  logout(context);
+                }),
+          ),
         ],
       );
       return appBar;

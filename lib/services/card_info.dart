@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 
-import '../pages/order_details.dart';
 import '../data/drugs_by_cat.dart';
-import '../widgets/card_info.dart';
 
 Future<Item> getDrugsData(int orderid) async {
   var response;
@@ -22,15 +20,6 @@ Future<Item> getDrugsData(int orderid) async {
   Item list = Item.fromJson(json.decode(responseString));
   print("${list.drugs[0].drugName}");
   return list;
-}
-
-Widget cardInfoTemplate(String datetime, String price, String status, int id) {
-  return CardInfo(
-    datetime: datetime,
-    price: price,
-    status: status,
-    drugId: id,
-  );
 }
 
 

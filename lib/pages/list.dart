@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../data/list_order.dart';
 import '../responses/user_login_response.dart';
 import '../services/card_info.dart';
+import '../widgets/card_info.dart';
 import '../services/home.dart';
 import '../pages/home.dart';
 
@@ -92,8 +93,10 @@ class _List_orderState extends State<List_order> {
     List<Widget> cards = [];
 
     for (int y = 0; y < order.length; y++) {
-      cards.add(cardInfoTemplate(order[y].order_date, "${order[y].Total_Cost}",
-          order[y].order_status_name, order[y].order_id));
+      cards.add(CardInfo(datetime: order[y].order_date, 
+      price: "${order[y].Total_Cost}",
+      status: order[y].order_status_name, 
+      drugId: order[y].order_id));
     }
     return cards;
   }

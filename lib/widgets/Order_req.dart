@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app_pharmacy/data/drugs_by_cat.dart';
 import '../services/card_info.dart';
 
-class order_request extends StatefulWidget {
+class OrderRequest extends StatefulWidget {
   final int id;
   final String name;
   final String datetime;
@@ -17,7 +17,7 @@ class order_request extends StatefulWidget {
   bool vis1 = false;
   bool vis2 = false;
   Color color;
-  order_request({this.id, this.name, this.datetime, this.price, this.status}) {
+  OrderRequest({this.id, this.name, this.datetime, this.price, this.status}) {
     List<String> splitDateTime = datetime.split('T');
     date = splitDateTime[0];
     String time = splitDateTime[1];
@@ -45,10 +45,10 @@ class order_request extends StatefulWidget {
   }
 
   @override
-  _order_requestState createState() => _order_requestState();
+  _OrderRequestState createState() => _OrderRequestState();
 }
 
-class _order_requestState extends State<order_request> {
+class _OrderRequestState extends State<OrderRequest> {
   Color col = Colors.grey[800];
   //bool vis=true;
   @override
@@ -134,97 +134,38 @@ class _order_requestState extends State<order_request> {
                 children: [
                   Visibility(
                     child: Container(
+                      width: 100,
+                      height: 25,
+                      child: InkWell(
+                          child: Container(
                         width: 100,
-                        height: 25,
-                        child: InkWell(
-                            child: Container(
-                          width: 100,
-                          height: 90,
-                          child: Icon(
-                            Icons.done_rounded,
-                            color: Colors.green[700],
-                            size: 30,
-                          ),
-                        )) /*FloatingActionButton(
-                              heroTag: '',
-                              backgroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
-                              child: Text(
-                                "Accept Order",
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange),
-                              ),
-                              onPressed: () {
-                                widget.vis = false;
-                                widget.vis1 = true;
-                                widget.vis2 = false;
-                                widget.color = Colors.green;
-                              }),*/
+                        height: 90,
+                        child: Icon(
+                          Icons.done_rounded,
+                          color: Colors.green[700],
+                          size: 30,
                         ),
+                      )),
+                    ),
                     visible: widget.vis,
                   ),
                   Visibility(
                     child: Container(
-                        width: 100,
-                        height: 25,
-                        child: InkWell(
-                          onTap: (){
-                            setState(() {
-
-                            });
-                          },
-                          child: Icon(
-                            Icons.cancel_outlined,
-                            color: Theme.of(context).primaryColor,
-                            size: 30,
-                          ),
-                        ) /*FloatingActionButton(
-                              heroTag: '',
-                              backgroundColor: Colors.black,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(10.0))),
-                              child: Text(
-                                "Reject Order",
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.orange),
-                              ),
-                              onPressed: ()  {
-                              }),*/
+                      width: 100,
+                      height: 25,
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {});
+                        },
+                        child: Icon(
+                          Icons.cancel_outlined,
+                          color: Theme.of(context).primaryColor,
+                          size: 30,
                         ),
+                      ),
+                    ),
                     visible: widget.vis,
                   ),
-                  /*
-                      Container(
-                        width: 100,
-                        height: 25,
-                        child: FloatingActionButton(
-                            heroTag: '',
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(10.0))),
-                            child: Icon(
-                              Icons.info_outline_rounded,
-                              color: Colors.orange,
-                            ),
-                            onPressed: () async {
-                              //here
-                              Item drug_list = await GetDrugsData(widget.id);
-                              Navigator.pushNamed(context, '/order_details', arguments: {
-                                'DrugObject': drug_list.drugs,
-                                'user_name': widget.name,
-                              });
-                            }),
-                      ),
-
-                       */
                 ],
               ),
             ),
@@ -241,6 +182,6 @@ Widget orderInfoTemplate(
     @required String datetime,
     @required int price,
     @required String status}) {
-  return order_request(
+  return OrderRequest(
       id: id, name: name, datetime: datetime, price: price, status: status);
 }

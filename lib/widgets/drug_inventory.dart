@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../data/drug_data_admin.dart';
 
 class DrugInventory extends StatelessWidget {
-  Drug drug;
+  final Drug drug;
 
-  DrugInventory({this.drug});
+  const DrugInventory({this.drug});
 
   @override
   Widget build(BuildContext context) {

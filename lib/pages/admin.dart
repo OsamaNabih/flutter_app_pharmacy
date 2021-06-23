@@ -190,11 +190,14 @@ class _AdminState extends State<Admin> {
           ],
           bottom: TabBar(
             tabs: [
-              Tab(
+              const Tab(
                 icon: Icon(Icons.inventory),
                 text: "Inventory",
               ),
-              Tab(icon: Icon(Icons.add_shopping_cart), text: "Orders"),
+              const Tab(
+                icon: Icon(Icons.add_shopping_cart),
+                 text: "Orders"
+              ),
             ],
           ),
         ),

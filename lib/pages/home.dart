@@ -337,13 +337,11 @@ class _HomeState extends State<Home> {
             child: GridView.builder(
               // Create a grid with 2 columns. If you change the scrollDirection to
               // horizontal, this produces 2 rows.
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 170,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 25,
-                childAspectRatio: MediaQuery.of(context).size.height *
-                    0.5 /
-                    MediaQuery.of(context).size.width,
+                childAspectRatio: 1 / 1.15, // width / height
               ),
               // Generate 100 widgets that display their index in the List.
               //padding: EdgeInsets.all(15),
@@ -361,6 +359,10 @@ class _HomeState extends State<Home> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).primaryColor,
+        selectedItemColor: Colors.yellowAccent,
+        unselectedItemColor: Colors.white70,
+        // selectedItemColor: _primaryColor,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -376,7 +378,7 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: selected,
-        selectedItemColor: _primaryColor,
+        
         onTap: _onItemTapped,
       ),
     );
@@ -590,59 +592,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-/*
-Dialog(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-                color: Colors.white,
-                height: MediaQuery.of(context).size.height * 0.45,
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "The Drug Description",
-
-                        style: TextStyle(
-                          fontSize: 25,
-                          fontWeight: FontWeight.normal,
-                          //color: _primaryColor,
-                        ),
-
-                      ),
-
-
-                    ),
-                    Container(
-                      height: 10,
-                      color: Colors.white,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.8,
-                      height: MediaQuery.of(context).size.height * 0.3,
-                      decoration: BoxDecoration(
-                        //color: Colors.amber,
-                          border: Border.all(
-                            color: Colors.redAccent,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: Center(
-                        child: Text(
-                          drug_desc,
-                          style: TextStyle(
-                            fontSize: 20,
-                            //color: _primaryColor,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                )),
-          ),
-        );
- */
